@@ -1,19 +1,42 @@
-html, body {
-  height: 100%;
-}
-
-html {
+:root {
   --boofer: 20px;
   --boofer-sm: 10px;
+  --color-bg: #fff;
+  --color-text: #000;
   --color-subtext: #4B5154;
   --font-fam-content: Inter, -apple-system, system-ui, Inter, vsans-serif;
   --font-fam-headings: 'Playball', cursive;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0C171C;
+    --color-text: #fff;
+    --color-subtext: #c3c3c3;
+  }
+}
+
+html, body {
+  height: 100%;
+}
+
 body {
+  background-color: var(--color-bg);
   font-family: var(--font-fam-content);
   font-size: 100%;
   line-height: 1.75;
+  color: var(--color-text);
+}
+
+body.light {
+  --color-bg: #fff;
+  --color-text: #000;
+  --color-subtext: #4B5154;
+}
+body.dark {
+  --color-bg: #0C171C;
+  --color-text: #fff;
+  --color-subtext: #c3c3c3;
 }
 
 #main-layout {
@@ -25,7 +48,7 @@ body {
 
 header {
   font-family: var(--font-fam-headings);
-  font-size: 20px;
+  font-size: 25px;
   padding-inline: var(--boofer);
 }
 
@@ -50,6 +73,7 @@ footer {
   gap: var(--boofer-sm);
   padding-inline: var(--boofer);
   padding-block-end: var(--boofer);
+  color: var(--color-subtext);
 }
 
 footer a {
@@ -59,6 +83,7 @@ footer a {
 
 footer a img {
   width: 20px;
+  background-color: #fff;
 }
 
 main {
