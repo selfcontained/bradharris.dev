@@ -81,7 +81,7 @@ You can also just ```module.exports = app.http``` if you're using something like
 
 Finally, fire up your application
 
-```
+```bash
 >node app.js
 ```
 

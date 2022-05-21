@@ -1,33 +1,42 @@
+---
+mainClass: "main"
+---
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{{ title }}</title>
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playball&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/main.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
   <link rel="stylesheet" href="/assets/github-dark-dimmed.css" />
 </head>
 <body>
   <div id="main-layout">
+    
     <header>
       <nav>
         <ul>
-          <li><a href="/">Brad Harris</a></li>
-          <li><a href="{{ '~/about.md' | url }}">About</a></li>
-          <li><a href="{{ '~/legacy/index.njk' | url }}">Legacy Posts</a></li>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="{{ '~/about.md' | url }}">about</a></li>
+          <li><a href="{{ '~/posts/index.njk' | url }}">posts</a></li>
         </ul>
       </nav>
     </header>
-    <main>
+    
+
+    <main class="{{ mainClass }}">
       {{ content | safe }}
     </main>
     <footer>
       <span>© {{ now | date('yyyy') }} Brad Harris</span>
-      •
-      <a href="https://twitter.com/selfc0ntained">Twitter</a>
-      •
-      <a href="https://github.com/selfcontained">GitHub</a>
+      <a href="https://twitter.com/selfc0ntained"><img src="/icons/twitter.png" width="15"/></a>
+      <a href="https://github.com/selfcontained"><img src="/icons/github.png" width="15"/></a>
+      <a href="https://www.linkedin.com/in/bradharris/"><img src="/icons/linkedin.png" width="15"/></a>
     </footer>
   </div>
 </body>
