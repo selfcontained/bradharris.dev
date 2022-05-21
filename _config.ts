@@ -16,6 +16,7 @@ site.loadAssets([".css"]);
 site.copy("images");
 site.copy("assets/favicons", ".");
 site.copy("assets/icons", "/icons");
+site.copy("CNAME");
 site.data('now', new Date());
 
 export default site;
