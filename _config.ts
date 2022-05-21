@@ -6,14 +6,11 @@ const site = lume();
 
 site.use(date());
 site.use(codeHighlight({
-  options: {
-    // classPrefix: "syntax-"
-  }
+  options: {}
 }))
 
-site.loadAssets([".css"]);
-
 site.copy("images");
+site.copy("assets/styles", "/styles");
 site.copy("assets/favicons", ".");
 site.copy("assets/scripts", "/scripts");
 site.copy("assets/icons", "/icons");
