@@ -4,16 +4,11 @@
   --color-bg: #fff;
   --color-text: #000;
   --color-subtext: #4B5154;
+  --color-links: #0197F6;
+  --color-accent: #FBFF12;
+  --color-accent2: #41EAD4;
   --font-fam-content: Inter, -apple-system, system-ui, Inter, vsans-serif;
   --font-fam-headings: 'Playball', cursive;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #0C171C;
-    --color-text: #fff;
-    --color-subtext: #c3c3c3;
-  }
 }
 
 html, body {
@@ -26,17 +21,41 @@ body {
   font-size: 100%;
   line-height: 1.75;
   color: var(--color-text);
+  transition: background 0.2s linear;
 }
 
-body.light {
-  --color-bg: #fff;
-  --color-text: #000;
-  --color-subtext: #4B5154;
-}
-body.dark {
+.dark-mode {
   --color-bg: #0C171C;
   --color-text: #fff;
   --color-subtext: #c3c3c3;
+  --color-links: #FF206E;
+}
+
+.dark-mode .glow {
+  transition: box-shadow ease-in-out 1000ms;
+  box-shadow: 0 0 .2rem #FF206E,
+    0 0 .2rem #fff,
+    0 0 2rem #FF206E,
+    0 0 0.8rem #FF206E,
+    0 0 0rem #FF206E,
+    inset 0 0 1.3rem #FF206E;
+}
+
+.dark-mode h1 {
+  transition: text-decoration ease-in-out 300ms;
+  color: var(--color-accent);
+  text-decoration: underline dotted var(--color-accent2);
+}
+
+.dark-mode .posts-list a {
+  color: var(--color-accent2);
+}
+
+#theme-toggle {
+  position: absolute;
+  /* width: 100px; */
+  top: 10px;
+  right: 2px;
 }
 
 #main-layout {
@@ -101,7 +120,7 @@ main img {
 a,
 a:visited,
 a:active {
-  color: #0197F6;
+  color: var(--color-links);
   text-decoration: none;
 }
 
@@ -177,4 +196,50 @@ main.post >time {
   #home-content section p {
     text-align: center;
   }
+}
+
+/* Dark-Mode toggle */
+.dark-mode-toggle-container {
+  /* visibility: hidden; */
+  opacity: 0;
+  transition: opacity ease-in-out 500ms;
+}
+.dark-mode-toggle-container .checkbox {
+  opacity: 0;
+  position: absolute;
+}
+
+.dark-mode-toggle-container .label {
+  width: 25px;
+  height: 10px;
+  background-color: var(--color-text);
+  display: flex;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  position: relative;
+}
+
+.dark-mode-toggle-container .ball {
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-bg);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  border-radius: 50%;
+  transition: transform 0.2s linear;
+}
+
+.dark-mode-toggle-container .checkbox:checked+.label .ball {
+  transform: translateX(15px);
+}
+
+.dark-mode-toggle-container .dark-label,
+.dark-mode-toggle-container .light-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-bg);
+  font-family: var(--font-fam-headings);
 }

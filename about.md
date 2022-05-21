@@ -5,7 +5,7 @@ title: Brad Harris
 
 Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.
 
-<img src="/images/fambam.jpg" width="500" height="334" id="fambam-photo" />
+<img src="/images/fambam.jpg" width="500" height="334" id="fambam-photo" class="glow" />
   
 I'm currently working at <a href="https://slack.com/">Slack</a>, focusing on the developer platform. I've worked on the <a href="https://slack.com/features/workflow-automation">Workflow Builder</a> tool, and am currently working our our <a href="https://api.slack.com/future">future</a> version of the platform for developers, which is full of fun challenges, like our <a href="https://deno.com/blog/slack">Deno runtime</a> for Slack Functions.
 

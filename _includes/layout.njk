@@ -13,11 +13,20 @@ mainClass: "main"
   <link href="https://fonts.googleapis.com/css2?family=Playball&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/main.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
-  <link rel="stylesheet" href="/assets/github-dark-dimmed.css" />
+  <link rel="stylesheet" href="/assets/monokai.css" />
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
 </head>
 <body>
   <div id="main-layout">
-    
     <header>
       <nav>
         <ul>
@@ -37,7 +46,16 @@ mainClass: "main"
       <a href="https://twitter.com/selfc0ntained"><img src="/icons/twitter.png" width="15"/></a>
       <a href="https://github.com/selfcontained"><img src="/icons/github.png" width="15"/></a>
       <a href="https://www.linkedin.com/in/bradharris/"><img src="/icons/linkedin.png" width="15"/></a>
+      <div class="dark-mode-toggle-container">
+        <input type="checkbox" class="checkbox" id="dm-toggle">
+        <label for="dm-toggle" class="label">
+          <div class='ball'></div>
+          <span class="dark-label">D</span>
+          <span class="light-label">L</span>
+        </label>
+      </div>
     </footer>
   </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
 </body>
 </html>
