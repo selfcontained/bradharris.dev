@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="/assets/main.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/assets/github-dark-dimmed.css" />
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">Brad Harris</a></li>
+          <li><a href="{{ '~/about.md' | url }}">About</a></li>
+          <li><a href="{{ '~/legacy/index.njk' | url }}">Legacy Posts</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      {{ content | safe }}
+    </main>
+    <footer>
+      <span>© {{ now | date('yyyy') }} Brad Harris</span>
+      •
+      <a href="https://twitter.com/selfc0ntained">Twitter</a>
+      •
+      <a href="https://github.com/selfcontained">GitHub</a>
+    </footer>
+  </div>
+</body>
+</html>

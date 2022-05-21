@@ -1,0 +1,45 @@
+html, body {
+  height: 100%;
+}
+
+html {
+  --gap: 1.5rem;
+  --fluid-gap: clamp(0.5rem, 2vw, 3.5rem);
+}
+
+body {
+  font-family: Inter, -apple-system, system-ui, Inter, sans-serif;
+  font-size: 100%;
+  line-height: 1.75;
+}
+
+#main-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  min-height: 100%;
+}
+
+header nav ul {
+  display: flex;
+  list-style-type: none;
+  gap: var(--gap);
+}
+
+footer {
+  position: sticky;
+  top: 100vh;
+  padding-inline: var(--fluid-gap);
+  padding-block-end: var(--fluid-gap);
+}
+
+main {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+#fambam-photo {
+  border-radius: 10px;
+  max-width: 100%;
+  height: auto;
+}
