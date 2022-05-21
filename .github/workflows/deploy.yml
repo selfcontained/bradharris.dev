@@ -19,7 +19,7 @@ jobs:
 
       - name: Build site
         run: |
-          deno task build --location=https://selfcontained.github.io/bradmharris.com/
+          deno task build --location=https://bradharris.dev
 
       - name: Deploy
         uses: crazy-max/ghaction-github-pages@v2.0.1
