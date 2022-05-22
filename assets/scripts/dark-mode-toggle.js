@@ -1,14 +1,12 @@
 const template = document.createElement('template');
 template.innerHTML = `
 <style>
-.container {}
-
-.container .checkbox {
+input[type="checkbox"] {
   opacity: 0;
   position: absolute;
 }
 
-.container .label {
+.label {
   width: 25px;
   height: 10px;
   background-color: var(--color-text);
@@ -20,7 +18,7 @@ template.innerHTML = `
   position: relative;
 }
 
-.container .ball {
+.ball {
   width: 16px;
   height: 16px;
   background-color: var(--color-bg);
@@ -31,20 +29,20 @@ template.innerHTML = `
   transition: transform 0.2s linear;
 }
 
-.container .checkbox:checked+.label .ball {
+input[type="checkbox"]:checked+.label .ball {
   transform: translateX(15px);
 }
 
-.container .dark-label,
-.container .light-label {
+.dark-label,
+.light-label {
   font-size: 12px;
   font-weight: 400;
   color: var(--color-bg);
   font-family: var(--font-fam-headings);
 }
 </style>
-<div class="container">
-  <input type="checkbox" class="checkbox" id="dm-toggle">
+<div>
+  <input type="checkbox" id="dm-toggle">
   <label for="dm-toggle" class="label">
     <div class='ball'></div>
     <span class="dark-label">D</span>
@@ -58,19 +56,16 @@ class DarkModeToggle extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-
-    this.$container = this.shadowRoot.querySelector('.container');
     this.$toggle = this.shadowRoot.querySelector('input[type="checkbox"]')
-
     this.prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+    this.setDarkModeEnabled(this.getInitialValue());
 
-    this.darkModeEnabled = this.getInitialValue();
+    this.$toggle.addEventListener('change', (e) => {
+      this.setDarkModeEnabled(e.target.checked);
+    });
 
-    this.$toggle.checked = this.darkModeEnabled;
-    this.setDarkModeEnabled(this.darkModeEnabled);
-
-    this.$toggle.addEventListener('change', () => {
-      this.setDarkModeEnabled(!this.darkModeEnabled);
+    this.prefersDark.addListener((evt) => {
+      this.setDarkModeEnabled(evt.matches);
     });
   }
 
@@ -99,7 +94,7 @@ class DarkModeToggle extends HTMLElement {
 
   setDarkModeEnabled(value) {
     this.darkModeEnabled = value;
-
+    this.$toggle.checked = value;
     document.documentElement.classList.toggle(this.darkmodeClass, value);
     localStorage.setItem(this.key, JSON.stringify(value));
   }

@@ -2,7 +2,7 @@ name: Publish on GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -27,3 +27,9 @@ jobs:
           build_dir: _site
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: bradharris-dev
+          entrypoint: server.ts
