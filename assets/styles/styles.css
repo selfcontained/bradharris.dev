@@ -5,7 +5,7 @@
   --color-text: #000;
   --color-subtext: #4B5154;
   --color-links: #0197F6;
-  --color-accent: #FBFF12;
+  --color-accent: #FF206E;
   --color-accent2: #41EAD4;
   --font-fam-content: Inter, -apple-system, system-ui, Inter, vsans-serif;
   --font-fam-headings: 'Playball', cursive;
@@ -29,9 +29,11 @@ body {
   --color-text: #fff;
   --color-subtext: #c3c3c3;
   --color-links: #FF206E;
+  --color-accent: #FBFF12;
+  --color-accent2: #41EAD4;
 }
 
-.dark-mode .glow {
+.dark-mode .glow, .dark-mode hr {
   transition: box-shadow ease-in-out 1000ms;
   box-shadow: 0 0 .2rem #FF206E,
     0 0 .2rem #fff,
@@ -127,18 +129,35 @@ a:hover {
   text-decoration: underline;
 }
 
+hr {
+  border: solid 1px var(--color-accent);
+}
+
 .posts-list {
   padding: 0 0 0 5px;
   list-style: none;
 }
 
+.posts-list li {
+  display: flex;
+  gap: var(--boofer);
+  margin-top: var(--boofer);
+}
+
 .posts-list h3 {
-  margin-bottom: 0;
+  margin: 0;
 }
 
 .posts-list p {
   margin: 0;
+}
+
+.posts-list time {
   color: var(--color-subtext);
+}
+
+.post-excerpt {
+  font-style: italic;
 }
 
 /* Page specific styles */
@@ -156,6 +175,16 @@ main.post h1 {
 }
 main.post >time {
   color: var(--color-subtext);
+}
+
+.post-hero-image {
+  width: clamp(100%, 800px, 100%);
+  height: 200px;
+  object-fit: cover;
+}
+
+.post-thumbnail {
+  width: 150px;
 }
 
 #home-content img {

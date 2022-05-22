@@ -1,8 +1,12 @@
 ---
 layout: layout.njk
 mainClass: "post"
+heroImage: ""
 ---
 
+{% if heroImage != "" %}
+  <img src={{heroImage}} class="post-hero-image" alt="{{heroImageAlt}}"/>
+{% endif %}
 <h1>{{ title }}</h1>
 <time>{{ date | date('PPP') }}</time>
 

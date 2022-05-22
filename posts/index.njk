@@ -1,19 +1,46 @@
 ---
 layout: "layout.njk"
-title: Posts
+title: Posts - Brad Harris
 ---
 
 <h1>Posts</h1>
 
 <article>
-  <p>
-    Not much new going on here atm. 
-  </p>
+  {% set posts =search.pages("post new", "date=desc") %}
+
+  {% if posts.length ==0 %}
+    <p>
+      Not much new going on here atm.
+    </p>
+  {% endif %}
+
+  <ul class="posts-list">
+    {% for post in search.pages("post new", "date=desc") %}
+      <li>
+        {% if post.data.thumbnailImage != "" %}
+          <img src="{{post.data.thumbnailImage}}" class="post-thumbnail" alt="{{post.data.thumbnailImageAlt}}"/>
+        {% endif %}
+        <section>
+          <h3>
+            <a href="{{ post.data.url }}">{{ post.data.title }}</a>
+          </h3>
+          <p>
+            <time>{{ post.data.date | date('PPP') }}</time>
+          </p>
+          {% if post.data.excerpt != "" %}
+            <p class="post-excerpt">{{ post.data.excerpt }}</p>
+          {% endif %}
+        </section>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <hr class="glow" />
 
   <p>
     Check out some of my posts on <a href="https://medium.com/@selfc0ntained">Medium</a> from when I worked on <a href="https://www.producthunt.com/posts/beep-boop">BeepBoop</a> and <a href="https://www.producthunt.com/posts/missions">Missions</a>.
   </p>
-    
+
   <p>
     I've also got a collection of <a href="{{ '~/legacy/index.njk' | url }}">old school posts</a> from the beginning of my career.
   </p>

@@ -1,6 +1,6 @@
 ---
 layout: "layout.njk"
-title: Old School Posts
+title: Old School Posts - Brad Harris
 ---
 
 <h1>Old School Posts</h1>
@@ -13,12 +13,14 @@ title: Old School Posts
   <ul class="posts-list">
     {% for post in search.pages("legacy", "date=desc") %}
       <li>
-        <h3>
-          <a href="{{ post.data.url }}">{{ post.data.title }}</a>
-        </h3>
-        <p>
-          <time>{{ post.data.date | date('PPP') }}</time>
-        </p>
+        <section>
+          <h3>
+            <a href="{{ post.data.url }}">{{ post.data.title }}</a>
+          </h3>
+          <p>
+            <time>{{ post.data.date | date('PPP') }}</time>
+          </p>
+        </section>
       </li>
     {% endfor %}
   </ul>
