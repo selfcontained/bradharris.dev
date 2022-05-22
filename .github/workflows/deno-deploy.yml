@@ -22,7 +22,7 @@ jobs:
 
       - name: Build site
         run: |
-          deno task build --location=https://bradharris.dev
+          deno task build --location=https://berad.dev
 
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
