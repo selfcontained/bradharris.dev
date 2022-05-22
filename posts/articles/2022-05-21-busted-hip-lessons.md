@@ -41,4 +41,6 @@ My leadership and team at Slack have been amazing at supporting me while I recov
 There's a handful of other lessons I'm in the middle of learning. Like how to trust my body again after muscles have atrophied and joints have stiffened up. Or how to find satisfaction from rehabilitation instead of weight lifting and exercising. I'm still learning those ones, and to be honest, I'm still learning a lot about the 3 lessons shared in this article. I'm not a huge believer of the everything-happens-for-a-reason mentality (and if you are, that's great, you're probably more in touch with yourself than me tbh), and that we have to find meaning in every event. Sometimes unfortunate accidents happen, and we might learn something from them, or we might not. I didn't intend to learn anything from breaking my hip, but turns out I did. Hopefully you don't have to have an injury to internalize some of these lessons ❤️.
 
 ---
-Image by <a href="https://pixabay.com/users/robert_c-1017101/">Robert C</a> from <a href="https://pixabay.com/">Pixabay</a>
+Banner image by <a href="https://pixabay.com/users/robert_c-1017101/">Robert C</a> from <a href="https://pixabay.com">Pixabay</a>
+
+Thumbnail image by <a href="https://pixabay.com/users/jplenio-7645255/">jplenio</a> from <a href="https://pixabay.com">Pixabay</a>
