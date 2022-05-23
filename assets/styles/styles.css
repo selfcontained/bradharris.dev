@@ -34,17 +34,16 @@ body {
 }
 
 .dark-mode .glow, .dark-mode hr {
-  transition: box-shadow ease-in-out 1000ms;
-  box-shadow: 0 0 .2rem #FF206E,
-    0 0 .2rem #fff,
-    0 0 2rem #FF206E,
-    0 0 0.8rem #FF206E,
-    0 0 0rem #FF206E,
-    inset 0 0 1.3rem #FF206E;
+  border-color: #fff;
+  transition: box-shadow 1000ms ease-in-out;
+  box-shadow:
+    0px 0px 2px var(--color-links),
+    0px 0px 5px var(--color-links),
+    0px 0px 25px var(--color-links);
 }
 
 .dark-mode h1 {
-  transition: text-decoration ease-in-out 300ms;
+  transition: text-decoration 300ms ease-in-out;
   color: var(--color-accent);
   text-decoration: underline dotted var(--color-accent2);
 }
@@ -173,6 +172,10 @@ hr {
   gap: var(--boofer);
 }
 
+#fambam-photo {
+  margin: 25px 0px;
+}
+
 /* Post Styles */
 main.post h1 {
   margin-bottom: 0;
@@ -205,6 +208,8 @@ main.post >time {
 @media only screen and (max-width: 500px) {
   header nav ul {
     justify-content: center;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 
   footer {
