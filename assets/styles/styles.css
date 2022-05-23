@@ -118,6 +118,10 @@ main img {
   height: auto;
 }
 
+main p {
+  text-align: justify;
+}
+
 a,
 a:visited,
 a:active {
@@ -131,6 +135,7 @@ a:hover {
 
 hr {
   border: solid 1px var(--color-accent);
+  margin: 50px 0px;
 }
 
 .posts-list {
@@ -185,6 +190,7 @@ main.post >time {
 
 .post-thumbnail {
   width: 150px;
+  height: 150px;
 }
 
 #home-content img {
@@ -223,5 +229,14 @@ main.post >time {
 
   #home-content section p {
     text-align: center;
+  }
+
+  .posts-list li {
+    flex-wrap: wrap;
+  }
+
+  .post-thumbnail {
+    width: 100%;
+    height: 100%;
   }
 }
