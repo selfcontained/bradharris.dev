@@ -192,6 +192,17 @@ hr {
   gap: var(--boofer);
 }
 
+.latest-posts {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-more {
+  font-family: var(--font-fam-content);
+  font-weight: normal;
+}
+
 #fambam-photo {
   margin: 25px 0px;
 }

@@ -20,7 +20,10 @@ twitterCard: "summary_large_image"
 <div>
   <hr />
 
-  <h2>📃 Latest Posts</h2>
+  <div class="latest-posts">
+    <h2>📃 Latest Posts</h2>
+    <a href="/posts/" class="view-more">view more</a>
+  </div>
 
   {{ comp.postlist({ posts: search.pages("post new", "date=desc") }) | safe }}
 </div>
