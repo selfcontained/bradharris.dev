@@ -14,26 +14,7 @@ title: Posts - Brad Harris
     </p>
   {% endif %}
 
-  <ul class="posts-list">
-    {% for post in search.pages("post new", "date=desc") %}
-      <li>
-        {% if post.data.thumbnailImage != "" %}
-          <img src="{{post.data.thumbnailImage}}" class="post-thumbnail" alt="{{post.data.thumbnailImageAlt}}"/>
-        {% endif %}
-        <section>
-          <h3>
-            <a href="{{ post.data.url }}">{{ post.data.title }}</a>
-          </h3>
-          <p>
-            <time>{{ post.data.date | date('PPP') }}</time>
-          </p>
-          {% if post.data.excerpt != "" %}
-            <p class="post-excerpt">{{ post.data.excerpt }}</p>
-          {% endif %}
-        </section>
-      </li>
-    {% endfor %}
-  </ul>
+  {{ comp.postlist({ posts: search.pages("post new", "date=desc") }) | safe }}
 
   <hr class="glow" />
 

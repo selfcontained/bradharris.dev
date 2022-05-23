@@ -6,7 +6,7 @@
   --color-subtext: #4B5154;
   --color-links: #0197F6;
   --color-accent: #FF206E;
-  --color-accent2: #41EAD4;
+  --color-accent2: #91F3E6;
   --font-fam-content: Inter, -apple-system, system-ui, Inter, vsans-serif;
   --font-fam-headings: 'Playball', cursive;
 }
@@ -33,6 +33,10 @@ body {
   --color-accent2: #41EAD4;
 }
 
+.dark-mode img.glow {
+  border: solid 1px #fff;
+}
+
 .dark-mode .glow, .dark-mode hr {
   border-color: #fff;
   transition: box-shadow 1000ms ease-in-out;
@@ -46,6 +50,12 @@ body {
   transition: text-decoration 300ms ease-in-out;
   color: var(--color-accent);
   text-decoration: underline dotted var(--color-accent2);
+}
+
+.dark-mode h2, .dark-mode h3 {
+  transition: text-decoration 300ms ease-in-out;
+  color: var(--color-accent2);
+  text-decoration: underline dotted var(--color-accent);
 }
 
 .dark-mode .posts-list a {
@@ -84,6 +94,12 @@ h1 {
   word-break: break-word;
 }
 
+h2 {
+  font-size: 25px;
+  font-family: 'Playball', cursive;
+  word-break: break-word;
+}
+
 footer {
   display: flex;
   align-items: center;
@@ -115,6 +131,7 @@ main img {
   border-radius: 10px;
   max-width: 100%;
   height: auto;
+  border: solid 1px #fff;
 }
 
 main p {
@@ -138,7 +155,7 @@ hr {
 }
 
 .posts-list {
-  padding: 0 0 0 5px;
+  padding: 0px 15px;
   list-style: none;
 }
 
@@ -150,6 +167,7 @@ hr {
 
 .posts-list h3 {
   margin: 0;
+  text-decoration: none;
 }
 
 .posts-list p {
@@ -191,17 +209,27 @@ main.post >time {
   object-fit: cover;
 }
 
+.dark-mode img.post-hero-image {
+  /* border: none; */
+  box-shadow: none;
+}
+
 .post-thumbnail {
   width: 150px;
   height: 150px;
 }
 
 #home-content img {
-  border: 2px solid #000;
+  border: 1px solid #000;
   width: 250px;
   border-radius: 250px;
   height: 250px;
   object-fit: cover;
+}
+
+.dark-mode #home-content img {
+  border-color: #fff;
+  transition: border-color 300ms linear;
 }
 
 /* Small breakpoint */

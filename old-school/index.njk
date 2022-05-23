@@ -12,18 +12,6 @@ title: Old School Posts - Brad Harris
 
   <hr />
 
-  <ul class="posts-list">
-    {% for post in search.pages("legacy", "date=desc") %}
-      <li>
-        <section>
-          <h3>
-            <a href="{{ post.data.url }}">{{ post.data.title }}</a>
-          </h3>
-          <p>
-            <time>{{ post.data.date | date('PPP') }}</time>
-          </p>
-        </section>
-      </li>
-    {% endfor %}
-  </ul>
+  {{ comp.postlist({ posts: search.pages("legacy", "date=desc") }) | safe }}
+
 </article>
