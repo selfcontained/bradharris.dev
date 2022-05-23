@@ -125,6 +125,7 @@ main {
   margin: 0 auto;
   width: clamp(300px, 800px, 100%);
   max-width: 100%;
+  box-sizing: border-box;
 }
 
 main img {
@@ -163,10 +164,11 @@ hr {
   display: flex;
   gap: var(--boofer);
   margin-top: var(--boofer);
+  align-items: flex-start;
 }
 
 .posts-list h3 {
-  margin: 0;
+  margin: -9px 0 0 0;
   text-decoration: none;
 }
 
@@ -216,7 +218,7 @@ main.post >time {
 
 .post-thumbnail {
   width: 150px;
-  height: 150px;
+  height: auto;
 }
 
 #home-content img {
@@ -248,6 +250,10 @@ main.post >time {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  main {
+    padding: 0 var(--boofer-sm);
   }
 
   #home-content {
