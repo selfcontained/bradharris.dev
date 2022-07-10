@@ -1,0 +1,73 @@
+body {
+  background-color: #0E1A20;
+  color: #fff;
+  perspective: 700px;
+}
+
+a,
+a:visited,
+a:active {
+  color: #41EAD4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.lines {
+  position: fixed;
+  width: 100vw;
+  height: 4em;
+  background: linear-gradient(rgba(89, 193, 254, 0.2) 20%, #59c1fe 40%, #59c1fe 60%, rgba(89, 193, 254, 0.2) 80%);
+  background-size: 1px 0.5em;
+  box-shadow: 0 0 1em rgb(89 193 254 / 40%);
+  transform: translateY(-1em);
+  left: 0;
+}
+
+.grid {
+  background: linear-gradient(transparent 65%, rgba(46, 38, 255, 0.4) 75%, #7d41e6 80%, rgba(46, 38, 255, 0.4) 85%, transparent 95%), linear-gradient(90deg, transparent 65%, rgba(46, 38, 255, 0.4) 75%, #7d41e6 80%, rgba(46, 38, 255, 0.4) 85%, transparent 95%);
+  background-size: 30px 30px;
+  width: 200vw;
+  height: 300vh;
+  position: absolute;
+  bottom: -120vh;
+  transform: rotateX(-100deg);
+  -webkit-mask-image: linear-gradient(black, rgba(0, 0, 0, 0) 80%);
+}
+
+header nav {
+  border: 0.05rem solid #fff;
+  border-radius: 2rem;
+  padding: 0em;
+  box-shadow: 0 0 .2rem #fff,
+    0 0 .2rem #fff,
+    0 0 2rem #FF206E,
+    0 0 0.8rem #FF206E,
+    0 0 2.8rem #FF206E,
+    inset 0 0 1.3rem #FF206E;
+}
+
+header nav ul {
+  font-size: 2rem;
+  font-weight: 400;
+  /* font-family: "Yellowtail", sans-serif; */
+  font-family: "Sacramento", sans-serif;
+  color: #FBFF12;
+  text-shadow:
+    0 0 7px #fff,
+    0 0 10px #fff,
+    0 0 21px #fff,
+    0 0 42px #5271ff,
+    0 0 82px #5271ff,
+    0 0 92px #5271ff,
+    0 0 102px #5271ff,
+    0 0 151px #5271ff;
+}
+
+
+
+h1 {
+  color: #FF206E;
+}
