@@ -4,6 +4,9 @@ import codeHighlight from "lume/plugins/code_highlight.ts";
 import imagick from "lume/plugins/imagick.ts";
 import resolveUrls from "lume/plugins/resolve_urls.ts";
 
+// fixes a bug with days being off by one - https://github.com/lumeland/lume/issues/58#issuecomment-817396966
+Deno.env.set("TZ", "Z")
+
 const site = lume({
   location: new URL("https://bradharris.dev")
 });
