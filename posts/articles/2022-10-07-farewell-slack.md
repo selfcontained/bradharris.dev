@@ -28,7 +28,7 @@ From the technology side, when I joined Slack they were already well into a migr
 * A suite of UI components representing our design system, called [Slack-Kit][]
 * Slack's fast-booting frontend framework, called [Gantry][]
 
-Some of these already had countless hours of effort and thought put into them by folks while others were still in an earlier stage. One of Slack's super-powers is how open to collaboration teams and individuals are. I loved being able to give feedback and contribute to pretty much anything I was motivated to help with. That's stayed trued my entire time at Slack 😄.
+Some of these already had countless hours of effort and thought put into them by folks while others were still in an earlier stage. One of Slack's super-powers is how open to collaboration teams and individuals are. I loved being able to give feedback and contribute to pretty much anything I was motivated to help with. That stayed trued my entire time at Slack 😄.
 
 At Slack we were largely using [BEM][] for scoping our css classes to avoid collisions. I've been a fan of [CSS modules][] and was able to introduce support for them into our frontend stack. While I was tinkering with our CSS build pipeline, I bumped into an issue when referencing relative image paths in CSS. With a successful change under my belt already, surely I could just add support for relative image paths as well! I rolled up my sleeves and got it "working". PR opened, reviewed, and merged. On to the next thing!
 
