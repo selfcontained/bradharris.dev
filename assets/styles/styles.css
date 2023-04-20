@@ -79,6 +79,9 @@ header {
   font-family: var(--font-fam-headings);
   font-size: 25px;
   padding-inline: var(--boofer);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 header nav ul {
@@ -247,10 +250,18 @@ main.post >time {
 
 /* Small breakpoint */
 @media only screen and (max-width: 500px) {
+  header {
+    justify-content: center;
+  }
+ 
   header nav ul {
     justify-content: center;
     margin-top: 0;
     margin-bottom: 0;
+  }
+
+  header dark-mode-toggle {
+    display: none;
   }
 
   footer {
