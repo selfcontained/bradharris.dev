@@ -1,12 +1,12 @@
 ---
 author: Brad Harris
-title: "Min-Max Dopamine dumps with CDEs"
+title: "Min/Max dopamine dumps with CDEs"
 slug: min-max-dopamine-dumps-with-cdes
 date: 2023-05-09
-heroImage: "/post-heros/snow-trees.jpg"
-heroImageAlt: "Picture of snowy landscape with trees and mountains"
-thumbnailImage: "/post-thumbnails/winter-trees.jpg"
-thumbnailImageAlt: "Picture of snowy trees and mountains"
+heroImage: "/post-heros/bulldog-hackers.jpg"
+heroImageAlt: "Picture of clouds and trees"
+thumbnailImage: "/post-thumbnails/happy-programmer.png"
+thumbnailImageAlt: "digital art of smiling english bulldog computer hacker"
 tags:
   - post
   - new
@@ -31,3 +31,7 @@ Having too many tasks in flight has usually been something I try and avoid. Cont
 While I know this isn't an increase in my actual capacity to get work done, it is an increase in my ability to juggle tasks (I can't juggle btw). There's always little gaps in our efficiency as we work. Maybe it's waiting for feedback or a review. Those gaps aren't new, but I've found I'm more easily able to fill them in with <em>small tasks</em> because of the super-power of a cloud-based dev environment. This means more dopamine dumps into the brain 🧠, keeping me motivated and more effective throughout the <strong>BIG TASKS</strong>.
 
 Who'd a thunk... cloud development environments offering a new way to min-max the dopamine cycle during software development.
+
+---
+
+Thumbnail and banner images were created with the assistance of [DALL·E 2](https://openai.com/product/dall-e-2)
