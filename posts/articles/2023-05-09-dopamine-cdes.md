@@ -5,7 +5,7 @@ slug: min-max-dopamine-dumps-with-cdes
 date: 2023-05-09
 heroImage: "/post-heros/bulldog-hackers.jpg"
 heroImageAlt: "Picture of clouds and trees"
-thumbnailImage: "/post-thumbnails/happy-programmer.png"
+thumbnailImage: "/post-thumbnails/happy-programmer.jpg"
 thumbnailImageAlt: "digital art of smiling english bulldog computer hacker"
 tags:
   - post
