@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>markdown powered blogs</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2012-04-14/makdown-powered-blogs/">
+  <meta property="og:title" content="markdown powered blogs">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="markdown powered blogs">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>markdown powered blogs</h1>
+<time>April 14th, 2012</time>
+
+<article><p>Switching from a complex blogging platform to a lightweight, file-based blog is something of a trend amongst web developers lately.  I chalk it up to our love of simple solutions, and a preference of interfacing directly with a file-system.  I much prefer to open up <a href="http://www.sublimetext.com/2">SublimeText2</a>, go into <a href="http://www.sublimetext.com/docs/2/distraction_free.html">distraction free</a> mode and create a <a href="http://daringfireball.net/projects/markdown/syntax">markdown</a> file for a new article.  For me it's a smaller barrier of entry to writing than logging into Worpress and gathering my thoughts in a <code>&lt;textarea&gt;</code>.</p>
+<p>##what's out there</p>
+<p><a href="https://github.com/mojombo/jekyll">There</a> <a href="https://github.com/creationix/wheat">are</a> <a href="https://github.com/flatiron/blacksmith">some</a> great options out there for markdown based blogs.  My preference is towards <a href="http://nodejs.org">node.js</a>, and <a href="https://github.com/creationix/wheat">Wheat</a> (created by <a href="https://github.com/creationix">Tim Caswell</a>) as a platform for <a href="http://howtonode.org/">howtonode.org</a> is one of the more popular solutions in that category.  <a href="https://github.com/flatiron/blacksmith">Blacksmith</a> is another great solution, created by <a href="http://nodejitsu.com/">nodejitsu</a>.  Both are interesting and powerful solutions, but weren't exactly what I wanted.</p>
+<p>##javascript is easy</p>
+<p>I wanna be in control of the urls for articles, use the templating engine I prefer, and have some fun writing javascript.  I also want to be able to start my blog up locally on a node http server to tweak it and test it, and not have to generate the static site to view every change.  For the live site, I want to just <a href="https://github.com/selfcontained/selfcontained_blog">clone a git repo</a> on a server, and run <code>&gt; node generate.js</code> to create a static site for Apache to serve.  <a href="https://github.com/selfcontained/selfcontained_blog">So I did</a>, it was fun.  Feel free to check it out, maybe <a href="https://github.com/selfcontained/selfcontained_blog">fork</a> it and see what you think.</p>
+<p>##i can haz dropbox blog?</p>
+<p><a href="http://joehewitt.com/2011/10/03/dropbox-is-my-publish-button">Check out</a> what <a href="https://github.com/joehewitt">Joe Hewitt</a> is doing to integrate <a href="http://dropbox.com">Dropbox</a> into his blogging solution.  I dig it.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>PHP and an abstract Singleton</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2011-04-20/php-and-an-abstract-singleton/">
+  <meta property="og:title" content="PHP and an abstract Singleton">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="PHP and an abstract Singleton">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>PHP and an abstract Singleton</h1>
+<time>April 20th, 2011</time>
+
+<article><p>PHP is quirky.  I've heard it called other things, but I'll leave it at that.  I had a great learning experience while writing an abstract singleton class.  Static binding in PHP behaves uniquely, and is often a hurdle when you try and develop an kind of an API using inheritance and static properties.  If you aren't familiar with static binding in PHP, <a href="http://us3.php.net/lsb">read the doc on late static binding</a> and it will give you a good overview.  This issue came up while creating an abstract singleton class.</p>
+<p>Let me explain by example.  Here's my first pass at a simple abstract singleton class that I could theoretically extend from other classes, and just pick up "singleton" behavior.  Disclaimer!!! Don't use this class, it doesn't work!</p>
+<pre><code class="language-php hljs"><span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span> </span>{
+
+	<span class="hljs-keyword">private</span> <span class="hljs-built_in">static</span> <span class="hljs-variable">$instance</span> = <span class="hljs-literal">null</span>;
+
+	<span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> <span class="hljs-built_in">static</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getInstance</span>(<span class="hljs-params"></span>) </span>{
+
+		<span class="hljs-keyword">if</span>(<span class="hljs-built_in">static</span>::<span class="hljs-variable">$instance</span> === <span class="hljs-literal">null</span>) {
+			<span class="hljs-built_in">static</span>::<span class="hljs-variable">$instance</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Singleton</span>();
+		}
+		<span class="hljs-keyword">return</span> <span class="hljs-built_in">static</span>::<span class="hljs-variable">$instance</span>;
+	}
+
+	<span class="hljs-keyword">protected</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"></span>) </span>{ }
+
+}
+</code></pre>
+<p>This worked, initially, until I created two classes that extended <code>Singleton</code> and found the second one I called behaved remarkably like the first one.</p>
+<pre><code class="language-php hljs"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FirstSingleton</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Singleton</span> </span>{
+...
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SecondSingleton</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Singleton</span> </span>{
+...
+}
+</code></pre>
+<p>Any calls to <code>SecondSingleton::getInstace()</code> were really just returning the <code>FirstSingleton</code> instance.  Since the <code>private static $instance</code> property is delcared on the abstract <code>Singleton</code> class, there was really just one <code>$instance</code> being stored across calls to <code>getInstance()</code> from various subclasses.  PHP doesn't bind the <code>$instance</code> property to the called class, it is bound to the class where it is declared, <code>Singleton</code> in this case.  You <em>could</em> declare the <code>$instance</code> property on all classes that extend <code>Singleton</code>, but that is defeating the point of the abstract class.  Here's round two, which does work, but I have mixed feelings about:</p>
+<pre><code class="language-php hljs"><span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span> </span>{
+
+	<span class="hljs-keyword">private</span> <span class="hljs-built_in">static</span> <span class="hljs-variable">$instances</span>;
+
+	<span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> <span class="hljs-built_in">static</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getInstance</span>(<span class="hljs-params"></span>) </span>{
+		<span class="hljs-variable">$className</span> = <span class="hljs-title function_ invoke__">get_called_class</span>();
+
+		<span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>(<span class="hljs-built_in">self</span>::<span class="hljs-variable">$instances</span>[<span class="hljs-variable">$className</span>]) == <span class="hljs-literal">false</span>) {
+			<span class="hljs-built_in">self</span>::<span class="hljs-variable">$instances</span>[<span class="hljs-variable">$className</span>] = <span class="hljs-keyword">new</span> <span class="hljs-built_in">static</span>();
+		}
+		<span class="hljs-keyword">return</span> <span class="hljs-built_in">self</span>::<span class="hljs-variable">$instances</span>[<span class="hljs-variable">$className</span>];
+	}
+
+	<span class="hljs-keyword">protected</span> <span class="hljs-function"><span class="hljs-keyword">function</span>  <span class="hljs-title">__construct</span>(<span class="hljs-params"></span>) </span>{ }
+
+}
+</code></pre>
+<p>The change here is that instead of storing a single <code>$instance</code> property on the abstract <code>Singleton</code> class, we're storing an array of instances, indexed by the class name of the called class.  It behaves as expected, but the code isn't as clear or clean as I would have hoped it would be.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

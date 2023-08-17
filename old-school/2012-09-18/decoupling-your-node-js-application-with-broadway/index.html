@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>decoupling your node.js application with broadway</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2012-09-18/decoupling-your-node-js-application-with-broadway/">
+  <meta property="og:title" content="decoupling your node.js application with broadway">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="decoupling your node.js application with broadway">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>decoupling your node.js application with broadway</h1>
+<time>September 18th, 2012</time>
+
+<article><h2>the why</h2>
+<p>Why should you worry about decoupling your node.js application?  Can't you just use the module pattern and <code>require()</code> away?  Sure, sort of...until your application starts to grow, and module's begin to have cross dependencies.  In reality, you can avoid cross dependencies between modules for most small to medium sized applications, but as your application grows, you may run into <a href="/2012/05/08/node-js-circular-dependencies/">cyclic</a> <a href="http://nodejs.org/api/modules.html#modules_cycles">dependencies</a>, which can be hard to decipher and debug.  Without going into detail on what those are (follow those links if you're wondering), I present, a contrived example.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">var</span> <span class="hljs-title class_">ModuleA</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">'module-a'</span>),
+	<span class="hljs-title class_">ModuleB</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">'module-b'</span>);
+
+<span class="hljs-keyword">var</span> <span class="hljs-title class_">ModuleC</span> = <span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+	<span class="hljs-variable language_">this</span>.<span class="hljs-property">myB</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ModuleB</span>();
+};
+
+<span class="hljs-title class_">ModuleC</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> = {
+
+	<span class="hljs-comment">/** amazin' function! */</span>
+	amazinFunction : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">if</span>(<span class="hljs-title class_">ModuleA</span>.<span class="hljs-title function_">isAmazin</span>(<span class="hljs-params"><span class="hljs-variable language_">this</span>.myB</span>) {
+			<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">beginAwesomness</span>();
+		}<span class="hljs-keyword">else</span> {
+			<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">sadPanda</span>();
+		}
+	},
+
+	beginAwesomness : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) { <span class="hljs-comment">/** awesome stuff */</span> },
+
+	sadPanda : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) { <span class="hljs-comment">/** sad stuff */</span> }
+
+};
+</code></pre>
+<p>Here <code>ModuleC</code> is exported, and is a pretty basic function/prototype that has some required dependencies.  The principle of dependency injection would tell us that instead of ModuleC being responsible for loading ModuleA and ModuleB, those should be injected into it somehow.  <a href="http://github.com/flatiron/broadway">Broadway</a> is a fantastic library to help with this.</p>
+<h2>broadway</h2>
+<p>At it's core, <a href="http://github.com/flatiron/broadway">Broadway</a> provides a plugin architecture for applications, and a consistent way to manage and add functionality.  It also gives us a nice platform for dependency injection, and inversion of control, letting the modules alter and build on the application instead of the application being responsible to build everything and pull in your modules' functionality.  If you're interested in this concept, <a href="http://blog.nodejitsu.com/ioc-and-dependency-injection-with-broadway">this article</a> from the Nodejitsu blog is super informative.</p>
+<p>So, let's start with a basic Broadway application, and load up a plugin that we'll define below.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">var</span> broadway = <span class="hljs-built_in">require</span>(<span class="hljs-string">'broadway'</span>),
+	app = <span class="hljs-keyword">new</span> broadway.<span class="hljs-title class_">App</span>();
+
+app.<span class="hljs-title function_">use</span>(<span class="hljs-built_in">require</span>(<span class="hljs-string">'myposse'</span>));
+
+app.<span class="hljs-title function_">init</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) {
+	<span class="hljs-comment">// we're all setup, gtg</span>
+});
+</code></pre>
+<p>A basic Broadway plugin might look something like...</p>
+<pre><code class="language-javascript hljs"><span class="hljs-comment">// myposse.js</span>
+
+<span class="hljs-keyword">var</span> <span class="hljs-title class_">MyPosse</span> = <span class="hljs-built_in">exports</span>;
+
+<span class="hljs-title class_">MyPosse</span>.<span class="hljs-property">name</span> = <span class="hljs-string">'myposse'</span>;
+
+<span class="hljs-title class_">MyPosse</span>.<span class="hljs-property">attach</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">options</span>) {
+	<span class="hljs-keyword">var</span> app = <span class="hljs-variable language_">this</span>;
+
+	<span class="hljs-comment">// here we can add some functionality to the app</span>
+	app.<span class="hljs-property">posse</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"my posse's on broadway"</span>);
+	};
+};
+
+<span class="hljs-title class_">MyPosse</span>.<span class="hljs-property">init</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) {
+	<span class="hljs-comment">// handle any asynchronous initilization</span>
+	<span class="hljs-title function_">done</span>();
+};
+</code></pre>
+<p>RIP MCA.  Inside our <code>attach</code> function is where we can pull in our related modules, and expose them to the application.  Notice how we're calling the result of the require statement of each module, passing in the Broadway application, and setting that onto the application itself.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-title class_">MyPosse</span>.<span class="hljs-property">attach</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">options</span>) {
+	<span class="hljs-keyword">var</span> app = <span class="hljs-variable language_">this</span>;
+
+	app.<span class="hljs-property">ModuleA</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">'module-a'</span>)(app);
+	app.<span class="hljs-property">ModuleB</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">'module-b'</span>)(app);
+	app.<span class="hljs-property">ModuleC</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">'module-c'</span>)(app);
+
+};
+</code></pre>
+<p>We would want to rework our above example of ModuleC to allow for this change, which also lets us remove the require statements for ModuleA and ModuleB, and pull them in as dependencies from the <code>app</code> object.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">app</span>) {
+
+	<span class="hljs-keyword">var</span> <span class="hljs-title class_">ModuleA</span> = app.<span class="hljs-property">ModuleA</span>,
+		<span class="hljs-title class_">ModuleB</span> = app.<span class="hljs-property">ModuleB</span>;
+
+	<span class="hljs-keyword">var</span> <span class="hljs-title class_">ModuleC</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">myB</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ModuleB</span>();
+	};
+
+	<span class="hljs-title class_">ModuleC</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> = {
+
+		<span class="hljs-comment">/** amazin' function! */</span>
+		amazinFunction : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+			<span class="hljs-keyword">if</span>(<span class="hljs-title class_">ModuleA</span>.<span class="hljs-title function_">isAmazin</span>(<span class="hljs-params"><span class="hljs-variable language_">this</span>.myB</span>) {
+				<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">beginAwesomness</span>();
+			}<span class="hljs-keyword">else</span> {
+				<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">sadPanda</span>();
+			}
+		},
+
+		beginAwesomness : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) { <span class="hljs-comment">/** awesome stuff */</span> },
+
+		sadPanda : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) { <span class="hljs-comment">/** sad stuff */</span> }
+
+	};
+
+	<span class="hljs-keyword">return</span> <span class="hljs-title class_">ModuleC</span>;
+
+};
+</code></pre>
+<p>With Broadway you can organize your application's modules and expose their functionality to the application via plugins.  I've found it a great way to organize services, models, and other application resources, and expose them to the application without coupling them directly to eachother via <code>require</code> statements.  There's definitely a place for modules that are independant enough to be <code>require()'d</code> at will, but I've also found that there's a place for application specific modules that are best managed at an application level.</p>
+<p>There's a lot more <a href="http://github.com/flatiron/broadway">Broadway</a> has to offer (such as application events), so check it out if you're building large applications on node.js.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

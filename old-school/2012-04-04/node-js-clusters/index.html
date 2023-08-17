@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>node.js clusters</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2012-04-04/node-js-clusters/">
+  <meta property="og:title" content="node.js clusters">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="node.js clusters">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>node.js clusters</h1>
+<time>April 4th, 2012</time>
+
+<article><p>When it comes time to deploy a <a href="http://nodejs.org">node.js</a> application, you'll want to examine how you can benefit from your hardware and take advantage of multiple cpus.  Node is single threaded, so having one process run your application on a server with more than one cpu isn't optimal.  Fortunately, like many things on node, it's simple to do so.</p>
+<p>Let's take the following example of a dead simple http server:</p>
+<pre><code class="language-javascript hljs">	<span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>).<span class="hljs-title function_">createServer</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>) {
+		res.<span class="hljs-title function_">writeHead</span>(<span class="hljs-number">200</span>);
+		res.<span class="hljs-title function_">end</span>(<span class="hljs-string">'this is dead simple'</span>);
+	}).<span class="hljs-title function_">listen</span>(<span class="hljs-number">3001</span>);
+</code></pre>
+<p>You've got that saved in a file, let's call it <em>app.js</em>.  You start it up...</p>
+<pre><code>	&gt; node app.js
+</code></pre>
+<p>...and it's amazing, it writes out text to all those that visit your site, just like you want.  It's become an overnight internet sensation, and now you want to know what crazy hoops you'll have to jump through to scale it up and take advantage of all the cpus on your server.  Enter the <a href="http://nodejs.org/docs/latest/api/cluster.html">cluster</a> module.</p>
+<p>We'll create a new file that we'll use in production to launch our application.  Let's call it <code>cluster.js</code>.</p>
+<pre><code class="language-javascript hljs">	<span class="hljs-keyword">var</span> cluster = <span class="hljs-built_in">require</span>(<span class="hljs-string">'cluster'</span>);
+
+	<span class="hljs-keyword">if</span> (cluster.<span class="hljs-property">isMaster</span>) {
+		<span class="hljs-comment">//start up workers for each cpu</span>
+		<span class="hljs-built_in">require</span>(<span class="hljs-string">'os'</span>).<span class="hljs-title function_">cpus</span>().<span class="hljs-title function_">forEach</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+			cluster.<span class="hljs-title function_">fork</span>();
+		});
+
+	} <span class="hljs-keyword">else</span> {
+		<span class="hljs-comment">//load up your application as a worker</span>
+		<span class="hljs-built_in">require</span>(<span class="hljs-string">'./app.js'</span>);
+	}
+</code></pre>
+<p>When you start your app now...</p>
+<pre><code>	&gt; node cluster.js
+</code></pre>
+<p>...node will recognize that the cluster is the master, and then you simply fork the cluster for each cpu you have.  Those in turn will start up, and those workers won't be the master, so they'll just load up your <code>app.js</code> and start up a process for each cpu.</p>
+<p>But wait, doesn't each worker have to listen on a different port?</p>
+<blockquote>
+<p>"The cluster module allows you to easily create a network of processes that all share server ports."</p>
+</blockquote>
+<p>One TCP server is shared between all workers, so they can all be listening on the same port.</p>
+<p>Awesome, you're now handling loads of traffic, but after a day you realize two of your workers died because you had an exception being thrown in that complex codebase of yours.  How can you make sure you keep them running?</p>
+<pre><code class="language-javascript hljs">	<span class="hljs-keyword">if</span>(cluster.<span class="hljs-property">isMaster</span>) {
+		<span class="hljs-comment">//start up workers for each cpu</span>
+		<span class="hljs-built_in">require</span>(<span class="hljs-string">'os'</span>).<span class="hljs-title function_">cpus</span>().<span class="hljs-title function_">forEach</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+			cluster.<span class="hljs-title function_">fork</span>();
+		});
+
+		cluster.<span class="hljs-title function_">on</span>(<span class="hljs-string">'death'</span>, <span class="hljs-keyword">function</span>(<span class="hljs-params">worker</span>) {
+			<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'worker '</span> + worker.<span class="hljs-property">pid</span> + <span class="hljs-string">' died'</span>);
+			cluster.<span class="hljs-title function_">fork</span>();
+		});
+	}
+</code></pre>
+<p>Listen for the 'death' event on the cluster, and just fork a new worker if one dies.  Simple huh?  Keep in mind, every worker is it's own process, therefor they don't share memory.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

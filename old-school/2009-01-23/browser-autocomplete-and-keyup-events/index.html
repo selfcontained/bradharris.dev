@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>Browser autocomplete and keyup events</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2009-01-23/browser-autocomplete-and-keyup-events/">
+  <meta property="og:title" content="Browser autocomplete and keyup events">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="Browser autocomplete and keyup events">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>Browser autocomplete and keyup events</h1>
+<time>January 23rd, 2009</time>
+
+<article><hr>
+<blockquote>
+<p>Update: This issue appears resolved in modern browsers, and was only noticed in IE7 and Firefox 3 (Linux &amp; Windows)</p>
+</blockquote>
+<hr>
+<p>Browser oddities are nothing new, but I came across one today that I haven't heard about before, and couldn't seem to find many comments about on the interwebs.  To get to the gist of it, when the native browser autocomplete functionality pops up for a text input, it also triggers a keyup event for the input.  I had some logic going on where I was firing an ajax lookup request as a user types in a value, and was waiting for a delay in their typing to fire the ajax request.  I noticed I would often get two events fired at almost the same time.  At first I chalked it up to oddities with setTimeout() not being completely accurate, but with more investigation, the native autocomplete that the browser supplies was the culprit.</p>
+<p>To try this for yourself, here is the test code I was using:</p>
+<pre><code class="language-html hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span>&gt;</span><span class="language-javascript">
+		<span class="hljs-keyword">function</span> <span class="hljs-title function_">handleEvent</span>(<span class="hljs-params"></span>) {
+			<span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">'keyup-test'</span>).<span class="hljs-property">innerHTML</span> += <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">'test'</span>).<span class="hljs-property">value</span> + <span class="hljs-string">'&lt;br /&gt;'</span>;
+		}
+	</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">action</span>=<span class="hljs-string">""</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"keyup-test"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Test Keyup Event<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"test"</span> <span class="hljs-attr">onkeypress</span>=<span class="hljs-string">"handleEvent();"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"bradharris"</span> /&gt;</span>
+	<span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</code></pre>
+<p>You'll see the current value of the input written out into a div above the input on each keyup event.  To get the autocomplete functionality of the browser working, just type in a value, and then submit the page by pressing enter when the input is focused.  The browser will then have that entry in its history of values for that input, and will start firing the keyup an extra time when it finds a match and shows the autocomplete box.  To turn it off, just add <code>autocomplete="off"</code> to the input tag, then it should only fire once per keyup.  I'm pretty perplexed as to why this exists, and I've seen it in <strong>IE7 and Firefox3 (Linux and Windows)</strong>.  If anyone knows why its around, I'd love to hear.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

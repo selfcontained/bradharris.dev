@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>Latest Endeavor: whoopdwhoop.com</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2011-01-23/latest-endeavor-whoopdwhoop-com/">
+  <meta property="og:title" content="Latest Endeavor: whoopdwhoop.com">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="Latest Endeavor: whoopdwhoop.com">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>Latest Endeavor: whoopdwhoop.com</h1>
+<time>January 23rd, 2011</time>
+
+<article><p><a href="http://whoopdwhoop.com"><img src="/images/whoopdwhoop.png" alt=""></a></p>
+<p>My wife and I have been chugging away on a new endeavor for awhile, and we finally got to a point where we could launch it live.  In short, it's a currency free, creative marketplace, and it's called <a href="http://whoopdwhoop.com">whoopdwhoop.com</a>.  It gives "artisans", or crafty people, a place to list their creations, and hopefully, a community where they can swap their creations with others all without exchanging any currency.  This is facilitated through a pretty simple "whoop" (read point) based system.  As people request a creation from someone, they pay them in "whoops", and then that person can use those "whoops" to request other creations.  We haven't pushed much of a marketing campaign at it yet, in hopes to gauge initial feedback before doing so, and fix or improve whatever came up.  We've done a fair amount of that so far, and are pretty happy with it's current state.  Needless to say, we can't speak to if it will catch on and be the start of a thriving community, we'll have to wait and see.</p>
+<p>While I don't think the majority of my blog's reader-base would be interested in using the site itself, I wanted to make a quick post to point out how the development of it has gone, which will hopefully be of more interest to those reading.</p>
+<p>I built the site in about 4 or 5 months of actual heads-down, after-hours work.  I have a day job, so this is just something I've spent nights and weekends putting time into.  It's built on <a href="http://zendframework.com/">Zend Framework</a> MVC, which I absolutely love.  The UI is enhanced through YUI, which is another favorite library of mine.  The database is MySQL, and I'm also using <a href="http://www.doctrine-project.org/">Doctrine ORM</a>.</p>
+<p>Zend Framework and Doctrine, in my mind, are a great marriage of libraries for PHP.  Zend handles everything I've needed from an MVC, with the additional benefits of providing out-of-the-box API's for things like ACL, Auth, Caching, Emails and Logging.  Doctrine does a great job at providing a stable and solid ORM, and a great means of managing updates through a simple migration strategy.  The best part about finding a solid framework you enjoy working with, is you eventually end up with a great set of features you've built that can be dropped in to any project, giving you quite the head-start.  When I started ( which was actually over a year ago, my motivation comes in spurts), Doctrine 2 was in development, but wasn't where it is now.  I like the concept they've taken with the new version, but currently I'm using their 1.x version.</p>
+<p>YUI is being used pretty sparingly right now.  I think the only modules being used currently are containers for the dialogs, buttons, and menu.  I need to give a shout out to the <a href="http://code.google.com/p/minify/">Minify</a> library as well, which is handling the JS/CSS minification quite nicely.</p>
+<p>I have some follow-up posts I plan on writing to go into more detail on some of the items and techniques I used in regards to things like Caching, but until I've had more of a chance to put the site through a ringer, I'll hold off.  Anyways, if you're building a new site, looking for frameworks, I highly recommend everything I mentioned above.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

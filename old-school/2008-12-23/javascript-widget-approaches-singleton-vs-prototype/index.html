@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>Javascript widget approaches: Singleton vs Prototype</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2008-12-23/javascript-widget-approaches-singleton-vs-prototype/">
+  <meta property="og:title" content="Javascript widget approaches: Singleton vs Prototype">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="Javascript widget approaches: Singleton vs Prototype">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>Javascript widget approaches: Singleton vs Prototype</h1>
+<time>December 23rd, 2008</time>
+
+<article><p>Recently I've been doing some work setting up some standard javascript widgets for a web application I am working on.  By widget, I'm referring to items such as javascript date pickers, tooltips, autocomplete inputs, etc.  I'm building on top of YUI for this approach, but the principles I'd like to discuss are applicable to any library.  YUI provides a fantastic javascript library, and a collection of widgets right out of the box.  More than likely, as you add them to your application, you'll want to wrap or extend them in your own javascript implementations to get them functioning as desired.  To accomplish this, I typically have taken one of two approaches, and these are the topics I'd like to cover.  To provide a working example, I'll use a simple wrapper for a YUI Calendar widget that is linked to a text input, and opens by clicking a calendar icon.</p>
+<p><img src="/images/datepicker.gif" alt="image of a date picker widget"></p>
+<h1>Prototype approach</h1>
+<p>This approach basically creates an instance of the javascript widget for each input field, and the javascript widget object utilizes the prototype definition so the internal functions can be defined once in memory.  Below is an example of what a simple DatePicker widget that "wraps" the YUI Calendar widget, would look like:</p>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">function</span> <span class="hljs-title function_">DatePicker</span>(<span class="hljs-params">icon, field</span>) {
+    <span class="hljs-variable language_">this</span>.<span class="hljs-property">icon</span> = icon;
+    <span class="hljs-variable language_">this</span>.<span class="hljs-property">field</span> = field;
+    <span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Event</span>.<span class="hljs-title function_">addListener</span>(<span class="hljs-variable language_">window</span>, <span class="hljs-string">'load'</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">initialize</span>, <span class="hljs-variable language_">this</span>, <span class="hljs-literal">true</span>);
+}
+<span class="hljs-title class_">DatePicker</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> = {
+
+	icon : <span class="hljs-literal">null</span>,
+
+	field : <span class="hljs-literal">null</span>,
+
+	calendar : <span class="hljs-literal">null</span>,
+
+	id : <span class="hljs-string">'date-calendar'</span>,
+
+	container : <span class="hljs-literal">null</span>,
+
+	initialize : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Event</span>.<span class="hljs-title function_">addListener</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">icon</span>, <span class="hljs-string">'click'</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">click</span>, <span class="hljs-variable language_">this</span>, <span class="hljs-literal">true</span>);
+		<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">renderContainer</span>();
+	},
+
+	renderContainer : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">container</span> = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">'div'</span>);
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">container</span>.<span class="hljs-property">style</span>.<span class="hljs-property">display</span> = <span class="hljs-string">'none'</span>;
+		<span class="hljs-variable language_">document</span>.<span class="hljs-property">body</span>.<span class="hljs-title function_">appendChild</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">container</span>);
+	},
+
+	click : <span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) {
+		<span class="hljs-keyword">if</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span> === <span class="hljs-literal">null</span>) {
+			<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">renderCalendar</span>();
+		}
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-title function_">show</span>();
+		<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">positionCalendar</span>();
+	},
+
+	renderCalendar : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span> = <span class="hljs-keyword">new</span> <span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">widget</span>.<span class="hljs-title class_">Calendar</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">field</span>+<span class="hljs-string">'-calendar'</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">container</span>, { <span class="hljs-attr">title</span>:<span class="hljs-string">'Choose a date:'</span>, <span class="hljs-attr">close</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">navigator</span>: <span class="hljs-literal">true</span> } );
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-property">selectEvent</span>.<span class="hljs-title function_">subscribe</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">populateDateField</span>, <span class="hljs-variable language_">this</span>, <span class="hljs-literal">true</span>);
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-title function_">render</span>();
+	},
+
+	positionCalendar : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">var</span> position = <span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Dom</span>.<span class="hljs-title function_">getXY</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">field</span>);
+		position[<span class="hljs-number">1</span>] = position[<span class="hljs-number">1</span>] + <span class="hljs-number">25</span>;
+		<span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Dom</span>.<span class="hljs-title function_">setXY</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">container</span>, position);
+	},
+
+	populateDateField : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">var</span> date = <span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-title function_">getSelectedDates</span>()[<span class="hljs-number">0</span>];
+		<span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Dom</span>.<span class="hljs-title function_">get</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">field</span>).<span class="hljs-property">value</span> = date.<span class="hljs-title function_">getMonth</span>() + <span class="hljs-string">'/'</span> + date.<span class="hljs-title function_">getDate</span>() + <span class="hljs-string">'/'</span> + date.<span class="hljs-title function_">getFullYear</span>();
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-title function_">hide</span>();
+	},
+
+	hide : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">if</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span> !== <span class="hljs-literal">null</span>) {
+			<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-title function_">hide</span>();
+		}
+	}
+
+};
+</code></pre>
+<p>The html for creating this widget is as simple as follows:</p>
+<pre><code class="language-html hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span>&gt;</span><span class="language-javascript">
+	<span class="hljs-keyword">new</span> <span class="hljs-title class_">DatePicker</span>(<span class="hljs-string">'date-icon'</span>, <span class="hljs-string">'date-field'</span>);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>Date: <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"date-field"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"date-field"</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"images/calendar.png"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"date-icon"</span> /&gt;</span>
+</code></pre>
+<p>Some benefits to this approach are that the instance of the widget object has a direct reference to the input id and calendar icon id, and nothing has to be 'inspected' at runtime execution of the events.  This leads to some cleaner code on a small level.  It also has some downsides as we'll discuss below.</p>
+<h1>Singleton approach</h1>
+<p>The Singleton approach creates a 'singleton' wrapper object that creates <strong>ONE</strong> YUI Calendar widget that is re-used across all input fields.  At runtime, the icon clicked on is used to determine which input field is in use through an extra attribute added to the icon image called 'data-field' that contains the id of the input it is linked to.  This code would look as follows:</p>
+<pre><code class="language-javascript hljs"><span class="hljs-title class_">DatePickerSingleton</span> = {
+
+	calendar : <span class="hljs-literal">null</span>,
+
+	id : <span class="hljs-string">'date-calendar'</span>,
+
+	container : <span class="hljs-string">'date-calendar-container'</span>,
+
+	activeInput : <span class="hljs-literal">null</span>,
+
+	initialize : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">var</span> icons = <span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Selector</span>.<span class="hljs-title function_">query</span>(<span class="hljs-string">'.date-icon'</span>);
+		<span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Event</span>.<span class="hljs-title function_">addListener</span>(icons, <span class="hljs-string">'click'</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">click</span>, <span class="hljs-variable language_">this</span>, <span class="hljs-literal">true</span>);
+		<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">renderContainer</span>();
+	},
+
+	renderContainer : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">var</span> container = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">'div'</span>);
+		container.<span class="hljs-property">id</span> = <span class="hljs-variable language_">this</span>.<span class="hljs-property">container</span>;
+		container.<span class="hljs-property">style</span>.<span class="hljs-property">display</span> = <span class="hljs-string">'none'</span>;
+		<span class="hljs-variable language_">document</span>.<span class="hljs-property">body</span>.<span class="hljs-title function_">appendChild</span>(container);
+	},
+
+	click : <span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) {
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">activeInput</span> = common.<span class="hljs-title function_">byEvent</span>(e).<span class="hljs-title function_">getAttribute</span>(<span class="hljs-string">'data-field'</span>);
+		<span class="hljs-keyword">if</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span> === <span class="hljs-literal">null</span>) {
+			<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">renderCalendar</span>();
+		}
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-title function_">show</span>();
+		<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">positionCalendar</span>();
+	},
+
+	renderCalendar : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span> = <span class="hljs-keyword">new</span> <span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">widget</span>.<span class="hljs-title class_">Calendar</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">id</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">container</span>, { <span class="hljs-attr">title</span>:<span class="hljs-string">'Choose a date:'</span>, <span class="hljs-attr">close</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">navigator</span>: <span class="hljs-literal">true</span> } );
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-property">selectEvent</span>.<span class="hljs-title function_">subscribe</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">populateDateField</span>, <span class="hljs-variable language_">this</span>, <span class="hljs-literal">true</span>);
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-title function_">render</span>();
+	},
+
+	positionCalendar : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">var</span> position = <span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Dom</span>.<span class="hljs-title function_">getXY</span>(<span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Dom</span>.<span class="hljs-title function_">get</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">activeInput</span>));
+		position[<span class="hljs-number">1</span>] = position[<span class="hljs-number">1</span>] + <span class="hljs-number">25</span>;
+		<span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Dom</span>.<span class="hljs-title function_">setXY</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">container</span>, position);
+	},
+
+	populateDateField : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">var</span> date = <span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-title function_">getSelectedDates</span>()[<span class="hljs-number">0</span>];
+		<span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Dom</span>.<span class="hljs-title function_">get</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">activeInput</span>).<span class="hljs-property">value</span> = date.<span class="hljs-title function_">getMonth</span>() + <span class="hljs-string">'/'</span> + date.<span class="hljs-title function_">getDate</span>() + <span class="hljs-string">'/'</span> + date.<span class="hljs-title function_">getFullYear</span>();
+		<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-title function_">hide</span>();
+	},
+
+	hide : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">if</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span> !== <span class="hljs-literal">null</span>) {
+			<span class="hljs-variable language_">this</span>.<span class="hljs-property">calendar</span>.<span class="hljs-title function_">hide</span>();
+		}
+	}
+
+};
+<span class="hljs-variable constant_">YAHOO</span>.<span class="hljs-property">util</span>.<span class="hljs-property">Event</span>.<span class="hljs-title function_">addListener</span>(<span class="hljs-variable language_">window</span>, <span class="hljs-string">'load'</span>, <span class="hljs-title class_">DatePickerSingleton</span>.<span class="hljs-property">initialize</span>, <span class="hljs-title class_">DatePickerSingleton</span>, <span class="hljs-literal">true</span>);
+</code></pre>
+<p>The html for creating this widget is as simple as follows:</p>
+<pre><code class="language-html hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"code-highlight"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">code</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>Date: <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"date_field"</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"images/calendar.png"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"date-icon"</span> <span class="hljs-attr">data-field</span>=<span class="hljs-string">"date_field"</span> /&gt;</span>
+</code></pre>
+<h1>Results</h1>
+<p>After testing out each of these approaches using a range from 1 to 1000 inputs on a page, I noticed some interesting side effects.  Both approaches load using almost the same amount of resources.  You might think the Prototype approach would require more memory on page load to create each of the widgets for each input, but in reality, due to the prototype definition, the only additional memory needed for each widget is for the unique element id's stored as attributes.  Each approach also uses a 'lazy loading' approach, that causes the Calendar widget to not be created until the user actually clicks on an icon.  This is where the two approaches begin to differ.</p>
+<p>The Singleton approach consumes a small amount of additional memory on the first click, as it creates the Calendar widget at this time.  For subsequent clicks the memory stays the same, as the objects have already been created, and are just being re-used.  A downside to this approach is that on page load, a javascript css selector query has to be executed to gather all date picker icons to set up click events for them.  This 'can' be time consuming with a large number of elements (1000+).</p>
+<p>The Prototype approach will consume additional memory for each new icon that is clicked, as there is a Calendar widget created lazily for each input at the runtime click event of the icon.  From my simple tests, I saw an increase ranging from 51.2 kb to 358.4 kb for each additional widget instantiated (each new icon clicked).  In contrast to the Singleton approach, on page load there is no css selector query to run in order to attach the click events, as the element ids are already in memory from the instantiation of each 'wrapper' (DatePicker) object.  This saves the possibly heavy css based query, but adds an initialize function for each input to the page load, which can be time consuming as well.</p>
+<p>Recently I have been using the Singleton approach for creating widgets where it is possible, as I believe it scales better, and avoids the problem of memory increasing as users go about using the application.  This can be accentuated even further when page life cycle is long such as in the case of single page web applications.  I found this little exercise interesting in my own work, and hope it is informative for some other people out there.  I'd love to hear any comments regarding this from everyone out there.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

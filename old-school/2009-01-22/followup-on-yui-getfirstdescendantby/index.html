@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>Followup on YUI : getFirstDescendantBy()</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2009-01-22/followup-on-yui-getfirstdescendantby/">
+  <meta property="og:title" content="Followup on YUI : getFirstDescendantBy()">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="Followup on YUI : getFirstDescendantBy()">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>Followup on YUI : getFirstDescendantBy()</h1>
+<time>January 22nd, 2009</time>
+
+<article><p>Awhile ago <a href="http://www.selfcontained.us/2008/08/20/javascript-getfirstdescendantby/">I posted on an additional function for YAHOO.util.Dom called <strong>getFirstDescendantBy()</strong></a>.  I was following <a href="http://sourceforge.net/tracker/?func=detail&amp;atid=836479&amp;aid=2068369&amp;group_id=165715">the ticket submitted to the YUI Sourceforge tracker</a>, and saw that it had been closed out, and that a new function called <code>YAHOO.util.Dom.getElementBy()</code> was added to fill this request.  I decided to check out <a href="https://github.com/yui/yui2">the newly available YUI source code on github</a>, and noticed some nice enhancements.  <code>YAHOO.util.Dom.getElementBy(method, tag, root)</code> is now available (not in the latest stable release yet though), and does what <code>getFirstDescendantBy</code> did, and in most cases its much faster.  Great job to the YUI team!</p>
+<p>Instead of taking a recursive approach to walking the graph like I had, YUI is just grabbing all the children by tag name, even if you don't supply a tag name (in this case it will use '*').  This turns out to be much faster than the recursive approach for most cases.  If you happen to be looking for an element in a very large dom tree structure, and that object is located early on in the tree, the new YUI approach will be slower than the recursive approach.  Fortunately, when I say <strong>"large"</strong> dom tree, I'm talking about a tree about 8 nodes deep, iterated 500-1000 times.  Most of us don't work with sites displaying that much html on a single page, so its definitely not a concern in my book.</p>
+<p>Digging in further, I noticed that the new <code>getElementBy</code> just delegates to <code>YAHOO.util.Dom.getElementsBy()</code>, which has now been improved to accept a number of additional parameters than what 2.6.0 has available.  One of those is a boolean, <code>firstOnly</code>, which will stop after it finds the first match, and return it.  It looks like there are also additional parameters for passing in an object to your apply method, and making that object the scope.</p>
+<p>I'm excited about this change, and it means I will soon be able to use the native YUI function for what I needed.  I'd suggest that anyone else that was using something such as <code>getFirstDescendantBy()</code> that I had shared look at switching once YUI releases the new function.  Thanks again YUI.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>google.drive.backup(iphoto.library)</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2012-04-28/backup-iphoto-with-google-drive/">
+  <meta property="og:title" content="google.drive.backup(iphoto.library)">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="google.drive.backup(iphoto.library)">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>google.drive.backup(iphoto.library)</h1>
+<time>April 28th, 2012</time>
+
+<article><p><a href="http://www.apple.com/macosx/apps/#timemachine">Time Machine</a> is great, but certain things, like the past 10 years of photos of my kids crawling around in diapers, learning to swim, snowboarding, and shoving their faces full of cake, warrant more than just one extra local backup in my mind.  There are lots of cloud storage solutions, but none have been cheep enough for me to really consider using, until <a href="http://drive.google.com">Google Drive</a> came out.  <em>$4.99 a month for 100 GB</em>, <strong>yes please!</strong></p>
+<h2>iphoto.library.clone() === ftw()</h2>
+<p>After installing <a href="http://drive.google.com">Google Drive</a> and grabbing a cheap 100 GB subscription, I set forth to backup my precious photos.  iPhoto stores it's library in an <em>app</em> file, which is really just a folder.  You can put that folder anywhere (it's in <code>~\Pictures\iPhoto Library</code> by default), so I <em>could</em> just move it into my <code>~\Google Drive</code> folder and call it good.  I don't have that much confidence in Google Drive yet, and would hate myself if I lost all those photos.  Since local hard-drive space is so cheap and plentiful, I decided to copy my <code>~\Pictures\iPhoto Library</code> folder into my <code>~\Google Drive</code> folder.  Once that was done, I just needed to keep it synched with my real iPhoto Library folder.</p>
+<h2>rescue.add(crontab).add(rsync);</h2>
+<p>OSX Lion uses <em>launchd</em> instead of <em>cron</em>, but I'm used to cron, and it's still installed w/ Lion, so I'm gonna use it.  Setting up an hourly <a href="http://en.wikipedia.org/wiki/Cron">cron</a> to <a href="http://en.wikipedia.org/wiki/Rsync">rsync</a> any changes to the local Google Drive copy of the iPhoto Library does the trick, and is super simple.  Create a text file, somewhere, like maybe <code>~\crontab.txt</code> and fill it with this lovely bit of text, adjusting any directories as needed:</p>
+<pre><code class="language-bash hljs">1 * * * * rsync -lrtuv ~/Pictures/iPhoto\ Library/ ~/Google\ Drive/iPhoto\ Library/
+</code></pre>
+<p>On the first minute of every hour, this job will run.  Feel free to adjust as you need, but rsync is fast, and only copies changes, so don't worry too much about running it too often.  The <code>-l</code> is important, as iPhoto contains a few internal symlinks that are needed for it to function correctly.  If you feel like giving it a test run, just run the following in a terminal:</p>
+<pre><code class="language-bash hljs">rsync -lrtuv ~/Pictures/iPhoto\ Library/ ~/Google\ Drive/iPhoto\ Library/
+</code></pre>
+<p>With that setup, we just need to add our crontab file to the system:</p>
+<pre><code class="language-bash hljs">crontab ~/crontab.txt
+</code></pre>
+<p>Then check to make sure your job is setup:</p>
+<pre><code class="language-bash hljs">crontab -l
+</code></pre>
+<p>That's it, now <a href="http://drive.google.com">Google Drive</a> will backup your iPhoto Library, and any updates to the library will be synched locally with the Google Drive copy.  If you get courageous, you can tell iPhoto to load the library in your Google Drive folder as the source by double clicking <code>~\Google Drive\iPhoto Library</code>.  If you do that, be sure to turn off your cron job though!</p>
+<pre><code class="language-bash hljs">crontab -r
+</code></pre>
+<p>Now you can happily <code>camera.takePicture(kids.eat(cake))</code> and know it's backed up somewhere other than just your home.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

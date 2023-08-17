@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>Getting keycode values in Javascript</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2009-09-16/getting-keycode-values-in-javascript/">
+  <meta property="og:title" content="Getting keycode values in Javascript">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="Getting keycode values in Javascript">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>Getting keycode values in Javascript</h1>
+<time>September 16th, 2009</time>
+
+<article><p>I've had to work with getting user input values based off of the keycode from the event a few times, and figured I'd throw together some of that functionality in case anyone else is wrestling with this.  Below is a simple "<strong>keycode</strong>" object that has a few utility functions, and maps of values to keycodes.</p>
+<pre><code class="language-javascript hljs">keycode = {
+
+	getKeyCode : <span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) {
+		<span class="hljs-keyword">var</span> keycode = <span class="hljs-literal">null</span>;
+		<span class="hljs-keyword">if</span>(<span class="hljs-variable language_">window</span>.<span class="hljs-property">event</span>) {
+			keycode = <span class="hljs-variable language_">window</span>.<span class="hljs-property">event</span>.<span class="hljs-property">keyCode</span>;
+		}<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(e) {
+			keycode = e.<span class="hljs-property">which</span>;
+		}
+		<span class="hljs-keyword">return</span> keycode;
+	},
+
+	getKeyCodeValue : <span class="hljs-keyword">function</span>(<span class="hljs-params">keyCode, shiftKey</span>) {
+		shiftKey = shiftKey || <span class="hljs-literal">false</span>;
+		<span class="hljs-keyword">var</span> value = <span class="hljs-literal">null</span>;
+		<span class="hljs-keyword">if</span>(shiftKey === <span class="hljs-literal">true</span>) {
+			value = <span class="hljs-variable language_">this</span>.<span class="hljs-property">modifiedByShift</span>[keyCode];
+		}<span class="hljs-keyword">else</span> {
+			value = <span class="hljs-variable language_">this</span>.<span class="hljs-property">keyCodeMap</span>[keyCode];
+		}
+		<span class="hljs-keyword">return</span> value;
+	},
+
+	getValueByEvent : <span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) {
+		<span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getKeyCodeValue</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getKeyCode</span>(e), e.<span class="hljs-property">shiftKey</span>);
+	},
+
+	keyCodeMap : {
+		<span class="hljs-number">8</span>:<span class="hljs-string">"backspace"</span>, <span class="hljs-number">9</span>:<span class="hljs-string">"tab"</span>, <span class="hljs-number">13</span>:<span class="hljs-string">"return"</span>, <span class="hljs-number">16</span>:<span class="hljs-string">"shift"</span>, <span class="hljs-number">17</span>:<span class="hljs-string">"ctrl"</span>, <span class="hljs-number">18</span>:<span class="hljs-string">"alt"</span>, <span class="hljs-number">19</span>:<span class="hljs-string">"pausebreak"</span>, <span class="hljs-number">20</span>:<span class="hljs-string">"capslock"</span>, <span class="hljs-number">27</span>:<span class="hljs-string">"escape"</span>, <span class="hljs-number">32</span>:<span class="hljs-string">" "</span>, <span class="hljs-number">33</span>:<span class="hljs-string">"pageup"</span>,
+		<span class="hljs-number">34</span>:<span class="hljs-string">"pagedown"</span>, <span class="hljs-number">35</span>:<span class="hljs-string">"end"</span>, <span class="hljs-number">36</span>:<span class="hljs-string">"home"</span>, <span class="hljs-number">37</span>:<span class="hljs-string">"left"</span>, <span class="hljs-number">38</span>:<span class="hljs-string">"up"</span>, <span class="hljs-number">39</span>:<span class="hljs-string">"right"</span>, <span class="hljs-number">40</span>:<span class="hljs-string">"down"</span>, <span class="hljs-number">43</span>:<span class="hljs-string">"+"</span>, <span class="hljs-number">44</span>:<span class="hljs-string">"printscreen"</span>, <span class="hljs-number">45</span>:<span class="hljs-string">"insert"</span>, <span class="hljs-number">46</span>:<span class="hljs-string">"delete"</span>,
+		<span class="hljs-number">48</span>:<span class="hljs-string">"0"</span>, <span class="hljs-number">49</span>:<span class="hljs-string">"1"</span>, <span class="hljs-number">50</span>:<span class="hljs-string">"2"</span>, <span class="hljs-number">51</span>:<span class="hljs-string">"3"</span>, <span class="hljs-number">52</span>:<span class="hljs-string">"4"</span>, <span class="hljs-number">53</span>:<span class="hljs-string">"5"</span>, <span class="hljs-number">54</span>:<span class="hljs-string">"6"</span>, <span class="hljs-number">55</span>:<span class="hljs-string">"7"</span>, <span class="hljs-number">56</span>:<span class="hljs-string">"8"</span>, <span class="hljs-number">57</span>:<span class="hljs-string">"9"</span>, <span class="hljs-number">59</span>:<span class="hljs-string">";"</span>,
+		<span class="hljs-number">61</span>:<span class="hljs-string">"="</span>, <span class="hljs-number">65</span>:<span class="hljs-string">"a"</span>, <span class="hljs-number">66</span>:<span class="hljs-string">"b"</span>, <span class="hljs-number">67</span>:<span class="hljs-string">"c"</span>, <span class="hljs-number">68</span>:<span class="hljs-string">"d"</span>, <span class="hljs-number">69</span>:<span class="hljs-string">"e"</span>, <span class="hljs-number">70</span>:<span class="hljs-string">"f"</span>, <span class="hljs-number">71</span>:<span class="hljs-string">"g"</span>, <span class="hljs-number">72</span>:<span class="hljs-string">"h"</span>, <span class="hljs-number">73</span>:<span class="hljs-string">"i"</span>, <span class="hljs-number">74</span>:<span class="hljs-string">"j"</span>, <span class="hljs-number">75</span>:<span class="hljs-string">"k"</span>, <span class="hljs-number">76</span>:<span class="hljs-string">"l"</span>,
+		<span class="hljs-number">77</span>:<span class="hljs-string">"m"</span>, <span class="hljs-number">78</span>:<span class="hljs-string">"n"</span>, <span class="hljs-number">79</span>:<span class="hljs-string">"o"</span>, <span class="hljs-number">80</span>:<span class="hljs-string">"p"</span>, <span class="hljs-number">81</span>:<span class="hljs-string">"q"</span>, <span class="hljs-number">82</span>:<span class="hljs-string">"r"</span>, <span class="hljs-number">83</span>:<span class="hljs-string">"s"</span>, <span class="hljs-number">84</span>:<span class="hljs-string">"t"</span>, <span class="hljs-number">85</span>:<span class="hljs-string">"u"</span>, <span class="hljs-number">86</span>:<span class="hljs-string">"v"</span>, <span class="hljs-number">87</span>:<span class="hljs-string">"w"</span>, <span class="hljs-number">88</span>:<span class="hljs-string">"x"</span>, <span class="hljs-number">89</span>:<span class="hljs-string">"y"</span>, <span class="hljs-number">90</span>:<span class="hljs-string">"z"</span>,
+		<span class="hljs-number">96</span>:<span class="hljs-string">"0"</span>, <span class="hljs-number">97</span>:<span class="hljs-string">"1"</span>, <span class="hljs-number">98</span>:<span class="hljs-string">"2"</span>, <span class="hljs-number">99</span>:<span class="hljs-string">"3"</span>, <span class="hljs-number">100</span>:<span class="hljs-string">"4"</span>, <span class="hljs-number">101</span>:<span class="hljs-string">"5"</span>, <span class="hljs-number">102</span>:<span class="hljs-string">"6"</span>, <span class="hljs-number">103</span>:<span class="hljs-string">"7"</span>, <span class="hljs-number">104</span>:<span class="hljs-string">"8"</span>, <span class="hljs-number">105</span>:<span class="hljs-string">"9"</span>,
+		<span class="hljs-number">106</span>: <span class="hljs-string">"*"</span>, <span class="hljs-number">107</span>:<span class="hljs-string">"+"</span>, <span class="hljs-number">109</span>:<span class="hljs-string">"-"</span>, <span class="hljs-number">110</span>:<span class="hljs-string">"."</span>, <span class="hljs-number">111</span>: <span class="hljs-string">"/"</span>,
+		<span class="hljs-number">112</span>:<span class="hljs-string">"f1"</span>, <span class="hljs-number">113</span>:<span class="hljs-string">"f2"</span>, <span class="hljs-number">114</span>:<span class="hljs-string">"f3"</span>, <span class="hljs-number">115</span>:<span class="hljs-string">"f4"</span>, <span class="hljs-number">116</span>:<span class="hljs-string">"f5"</span>, <span class="hljs-number">117</span>:<span class="hljs-string">"f6"</span>, <span class="hljs-number">118</span>:<span class="hljs-string">"f7"</span>, <span class="hljs-number">119</span>:<span class="hljs-string">"f8"</span>, <span class="hljs-number">120</span>:<span class="hljs-string">"f9"</span>, <span class="hljs-number">121</span>:<span class="hljs-string">"f10"</span>, <span class="hljs-number">122</span>:<span class="hljs-string">"f11"</span>, <span class="hljs-number">123</span>:<span class="hljs-string">"f12"</span>,
+		<span class="hljs-number">144</span>:<span class="hljs-string">"numlock"</span>, <span class="hljs-number">145</span>:<span class="hljs-string">"scrolllock"</span>, <span class="hljs-number">186</span>:<span class="hljs-string">";"</span>, <span class="hljs-number">187</span>:<span class="hljs-string">"="</span>, <span class="hljs-number">188</span>:<span class="hljs-string">","</span>, <span class="hljs-number">189</span>:<span class="hljs-string">"-"</span>, <span class="hljs-number">190</span>:<span class="hljs-string">"."</span>, <span class="hljs-number">191</span>:<span class="hljs-string">"/"</span>, <span class="hljs-number">192</span>:<span class="hljs-string">"`"</span>, <span class="hljs-number">219</span>:<span class="hljs-string">"["</span>, <span class="hljs-number">220</span>:<span class="hljs-string">"\\"</span>, <span class="hljs-number">221</span>:<span class="hljs-string">"]"</span>, <span class="hljs-number">222</span>:<span class="hljs-string">"'"</span>
+	},
+
+	modifiedByShift : {
+		<span class="hljs-number">192</span>:<span class="hljs-string">"~"</span>, <span class="hljs-number">48</span>:<span class="hljs-string">")"</span>, <span class="hljs-number">49</span>:<span class="hljs-string">"!"</span>, <span class="hljs-number">50</span>:<span class="hljs-string">"@"</span>, <span class="hljs-number">51</span>:<span class="hljs-string">"#"</span>, <span class="hljs-number">52</span>:<span class="hljs-string">"$"</span>, <span class="hljs-number">53</span>:<span class="hljs-string">"%"</span>, <span class="hljs-number">54</span>:<span class="hljs-string">"^"</span>, <span class="hljs-number">55</span>:<span class="hljs-string">"&amp;"</span>, <span class="hljs-number">56</span>:<span class="hljs-string">"*"</span>, <span class="hljs-number">57</span>:<span class="hljs-string">"("</span>, <span class="hljs-number">109</span>:<span class="hljs-string">"_"</span>, <span class="hljs-number">61</span>:<span class="hljs-string">"+"</span>,
+		<span class="hljs-number">219</span>:<span class="hljs-string">"{"</span>, <span class="hljs-number">221</span>:<span class="hljs-string">"}"</span>, <span class="hljs-number">220</span>:<span class="hljs-string">"|"</span>, <span class="hljs-number">59</span>:<span class="hljs-string">":"</span>, <span class="hljs-number">222</span>:<span class="hljs-string">"\""</span>, <span class="hljs-number">188</span>:<span class="hljs-string">"&lt;"</span>, <span class="hljs-number">189</span>:<span class="hljs-string">"&gt;"</span>, <span class="hljs-number">191</span>:<span class="hljs-string">"?"</span>,
+		<span class="hljs-number">96</span>:<span class="hljs-string">"insert"</span>, <span class="hljs-number">97</span>:<span class="hljs-string">"end"</span>, <span class="hljs-number">98</span>:<span class="hljs-string">"down"</span>, <span class="hljs-number">99</span>:<span class="hljs-string">"pagedown"</span>, <span class="hljs-number">100</span>:<span class="hljs-string">"left"</span>, <span class="hljs-number">102</span>:<span class="hljs-string">"right"</span>, <span class="hljs-number">103</span>:<span class="hljs-string">"home"</span>, <span class="hljs-number">104</span>:<span class="hljs-string">"up"</span>, <span class="hljs-number">105</span>:<span class="hljs-string">"pageup"</span>
+	}
+
+};
+</code></pre>
+<p>Typically, you would have an event listener on an input that would call <code>keycode.getValueByEvent()</code>.  You would have to pass in the event, (which is by default the first parameter passed into your event listener function).  This code handles the shift key modifier and the value that results from using it.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

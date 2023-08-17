@@ -1,0 +1,325 @@
+:root {
+  --boofer: 20px;
+  --boofer-sm: 10px;
+  --color-bg: #f3f0e8;
+  --color-text: #000;
+  --color-subtext: #4B5154;
+  --color-links: #0197F6;
+  --color-accent: #FF206E;
+  --color-accent2: #91F3E6;
+  --font-fam-content: Inter, -apple-system, system-ui, Inter, vsans-serif;
+  --font-fam-headings: 'Playball', cursive;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  font-family: var(--font-fam-content);
+  font-size: 100%;
+  line-height: 1.75;
+  color: var(--color-text);
+  transition: background 0.2s linear;
+}
+
+.dark-mode {
+  --color-bg: #0C171C;
+  --color-text: #fff;
+  --color-subtext: #c3c3c3;
+  --color-links: #FF206E;
+  --color-accent: #FBFF12;
+  --color-accent2: #41EAD4;
+}
+
+.dark-mode img.glow {
+  border: solid 1px #fff;
+}
+
+.dark-mode .glow, .dark-mode hr {
+  border-color: #fff;
+  transition: box-shadow 1000ms ease-in-out;
+  box-shadow:
+    0px 0px 2px var(--color-links),
+    0px 0px 5px var(--color-links),
+    0px 0px 25px var(--color-links);
+}
+
+.dark-mode .glow-2 {
+  border-color: #fff;
+  transition: box-shadow 1000ms ease-in-out;
+  box-shadow:
+    0px 0px 2px var(--color-accent2),
+    0px 0px 5px var(--color-accent2),
+    0px 0px 25px var(--color-accent2);
+}
+
+.dark-mode .glow-3 {
+  border-color: #fff;
+  transition: box-shadow 1000ms ease-in-out;
+  box-shadow:
+    0px 0px 2px var(--color-accent),
+    0px 0px 5px var(--color-accent),
+    0px 0px 25px var(--color-accent);
+}
+
+.dark-mode h1 {
+  transition: text-decoration 300ms ease-in-out;
+  color: var(--color-accent);
+  text-decoration: underline dotted var(--color-accent2);
+}
+
+.dark-mode h2, .dark-mode h3 {
+  transition: text-decoration 300ms ease-in-out;
+  color: var(--color-accent2);
+  text-decoration: underline dotted var(--color-accent);
+}
+
+.dark-mode .posts-list a {
+  color: var(--color-accent2);
+}
+
+.dark-mode footer a img {
+  background-color: #fff;
+}
+
+#theme-toggle {
+  position: absolute;
+  top: 10px;
+  right: 2px;
+}
+
+#main-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--boofer);
+  min-height: 100%;
+}
+
+header {
+  font-family: var(--font-fam-headings);
+  font-size: 25px;
+  padding-inline: var(--boofer);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header nav ul {
+  display: flex;
+  list-style-type: none;
+  gap: var(--boofer);
+  padding: 0;
+}
+
+h1 {
+  font-size: 30px;
+  font-family: 'Playball', cursive;
+  word-break: break-word;
+}
+
+h2 {
+  font-size: 25px;
+  font-family: 'Playball', cursive;
+  word-break: break-word;
+}
+
+footer {
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 100vh;
+  gap: var(--boofer-sm);
+  padding-inline: var(--boofer);
+  padding-block-end: var(--boofer);
+  color: var(--color-subtext);
+}
+
+footer a {
+  display: flex;
+  align-items: center;
+}
+
+footer a img {
+  width: 20px;
+  background-color: transparent;
+}
+
+main {
+  margin: 0 auto;
+  width: clamp(300px, 800px, 100%);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+main img {
+  border-radius: 10px;
+  max-width: 100%;
+  height: auto;
+  border: solid 1px #fff;
+}
+
+main p {
+  text-align: justify;
+}
+
+a,
+a:visited,
+a:active {
+  color: var(--color-links);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+hr {
+  border: solid 1px var(--color-accent);
+  margin: 50px 0px;
+}
+
+.posts-list {
+  padding: 0px 15px;
+  list-style: none;
+}
+
+.posts-list li {
+  display: flex;
+  gap: var(--boofer);
+  margin-top: var(--boofer);
+  align-items: flex-start;
+}
+
+.posts-list h3 {
+  margin: -9px 0 0 0;
+  text-decoration: none;
+}
+
+.posts-list p {
+  margin: 0;
+}
+
+.posts-list time {
+  color: var(--color-subtext);
+}
+
+.post-excerpt {
+  font-style: italic;
+}
+
+/* Page specific styles */
+#home-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--boofer);
+}
+
+.latest-posts {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-more {
+  font-family: var(--font-fam-content);
+  font-weight: normal;
+}
+
+#fambam-photo {
+  margin: 25px 0px;
+}
+
+/* Post Styles */
+main.post h1 {
+  margin-bottom: 0;
+  font-family: var(--font-fam-content);
+}
+main.post >time {
+  color: var(--color-subtext);
+}
+
+.post-hero-image {
+  width: clamp(100%, 800px, 100%);
+  height: 200px;
+  object-fit: cover;
+}
+
+.dark-mode img.post-hero-image {
+  /* border: none; */
+  box-shadow: none;
+}
+
+.post-thumbnail {
+  width: 150px;
+  height: auto;
+}
+
+#home-content img {
+  border: 1px solid #000;
+  width: 250px;
+  border-radius: 250px;
+  height: 250px;
+  object-fit: cover;
+}
+
+.dark-mode #home-content img {
+  border-color: #fff;
+  transition: border-color 300ms linear;
+}
+
+/* Small breakpoint */
+@media only screen and (max-width: 500px) {
+  header {
+    justify-content: center;
+  }
+ 
+  header nav ul {
+    justify-content: center;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  header dark-mode-toggle {
+    display: none;
+  }
+
+  footer {
+    justify-content: center;
+  }
+
+  main.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  main {
+    padding: 0 var(--boofer-sm);
+  }
+
+  #home-content {
+    justify-content: center;
+  }
+
+  #home-content section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #home-content section p {
+    text-align: center;
+  }
+
+  .posts-list li {
+    flex-wrap: wrap;
+  }
+
+  .post-thumbnail {
+    width: 100%;
+    height: 100%;
+  }
+}

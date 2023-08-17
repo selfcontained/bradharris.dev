@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>Farewell Slack</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/posts/farewell-slack/">
+  <meta property="og:title" content="Farewell Slack">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/slack-wall.jpg">
+  
+  
+  
+    <meta property="og:description" content="A reflection on my time at Slack">
+  
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="Farewell Slack">
+  
+  
+    <meta name="twitter:description" content="A reflection on my time at Slack">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/slack-wall.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of snowy trees and mountains">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+  <img src="/post-heros/slack-sign.jpg" class="post-hero-image glow" alt="Picture of snowy landscape with trees and mountains">
+
+<h1>Farewell Slack</h1>
+<time>October 7th, 2022</time>
+
+<article><p>In 2018 I <a href="https://slack.com/blog/productivity/slack-acquires-robot-pencils-missions-to-make-it-easy-for-non-tech-teams-to-streamline-work">joined Slack</a> when Missions was acquired. I was excited and such a huge fan of Slack the product (still am!), that it seemed a bit surreal I'd get to help work on it in some way. Even with elevated hopes for the opportunity, I don't think I realized what an amazing adventure it would turn out to be. After 4 years at Slack, and 3 years prior working on 2 products (<a href="https://www.producthunt.com/posts/beep-boop">BeepBoop</a> &amp; <a href="https://www.producthunt.com/posts/missions">Missions</a>) built around Slack, I've decided to close that chapter and make space for new adventures. Slack will always be a highlight of my career. I've been lucky enough to work with some of <em>the best</em> humans on some really fun projects and features.</p>
+<p>After joining Slack I got to help grow and lead a frontend team as we built what is now <a href="https://slack.com/features/workflow-automation">Workflow Builder</a>. It was a process of taking the workflow tool we built for Missions, rethinking what it could look like as a native part of Slack, and blending that into an existing platform and suite of technologies that existed at Slack. With hard work from people across the entire company we launched the feature, and now millions of workflows run every day.</p>
+<h3>Hitting Slack Bedrock</h3>
+<p>From the technology side, when I joined Slack they were already well into a migration to React on the frontend. Our frontend team building the new Workflow Builder interface got to benefit from so much work done here, which helped us build and iterate on product quickly.</p>
+<ul>
+<li>Frontend infra already in place, things like:
+<ul>
+<li>a build pipeline</li>
+<li>data/state and network abstractions/patterns</li>
+<li>i18n, metrics, and so. much. more.</li>
+</ul>
+</li>
+<li>A suite of UI components representing our design system, called <a href="https://slack.engineering/the-gradual-design-system-how-we-built-slack-kit/">Slack-Kit</a></li>
+<li>Slack's fast-booting frontend framework, called <a href="https://slack.engineering/gantry-slacks-fast-booting-frontend-framework/">Gantry</a></li>
+</ul>
+<p>Some of these already had countless hours of effort and thought put into them by folks while others were still in an earlier stage. One of Slack's super-powers is how open to collaboration teams and individuals are. I loved being able to give feedback and contribute to pretty much anything I was motivated to help with. That stayed trued my entire time at Slack 😄.</p>
+<p>At Slack we were largely using <a href="https://getbem.com/">BEM</a> for scoping our css classes to avoid collisions. I've been a fan of <a href="https://css-tricks.com/css-modules-part-1-need/">CSS modules</a> and was able to introduce support for them into our frontend stack. While I was tinkering with our CSS build pipeline, I bumped into an issue when referencing relative image paths in CSS. With a successful change under my belt already, surely I could just add support for relative image paths as well! I rolled up my sleeves and got it "working". PR opened, reviewed, and merged. On to the next thing!</p>
+<blockquote>
+<p>"Anyone know of any changes that might have broken our legacy CSS build on staging?"</p>
+</blockquote>
+<p>I saw that message and thought to myself <em>there's a legacy css build?</em></p>
+<p>...shortly followed by <em>phew, there's a staging environment.</em></p>
+<p>I started digging through the layers of the css build pipeline. You know that feeling where the code you're looking at starts to look NOT like all the other code? I was definitely feeling that, and was getting into some seriously old stuff. I decided to peek at some git history to get an idea of who I could reach out to for some context. Wait, this file was last changed by... <a href="https://twitter.com/iamcal">Cal Henderson</a>? Surely the CTO has more urgent matters than providing some context on some old css build configs. When I reached out to some more-adjacent colleagues, the best response I got was "You've hit bedrock!". I don't think I ever finished working on that, a minor defeat, but I told myself I had more pressing matters to attend to anyways.</p>
+<p>Not too long after releasing Workflow Builder I got to help design and build how we could extend the capabilities of a workflow step to apps. This became known as <a href="https://api.slack.com/workflows/steps">Workflow Steps for Apps</a>, and I got to <a href="https://youtu.be/uKV4CztGOQ0">present</a> at Slack's first digital Frontiers conference. Part of working on that feature included helping build the <a href="https://missionsai.slack.com/apps/A01AWGA48G6-google-sheets-for-workflow-builder?tab=more_info">Google Sheets for Workflow Builder</a> app, which to this day is the most widely used app with workflow steps. People love spreadsheets.</p>
+<h3>Full circle w/ SDKs and Frameworks</h3>
+<p>Prior to joining Slack, I helped build a Slack app framework called <a href="https://medium.com/beep-boop-hq/slapp-a-new-library-for-slack-apps-13a6e91b6bf">Slapp</a> with <a href="https://twitter.com/mbrevoort">Mike Brevoort</a>. After joining, we met with 2 amazing people that were on the Slack Devrel team, <a href="https://twitter.com/aoberoi">Ankur</a> and <a href="https://twitter.com/shaydewael">Shay</a>. I recall Ankur asking something along the line of "Hey, so what are your plans with Slapp?". We were pretty focused on figuring out what Workflow Builder was going to be, and didn't have an immediate product need to evolve the framework, or plans to use it directly. I think the next question was something like, "So, can we have it? I guess we sorta <em>do</em> have it since you've joined Slack".</p>
+<p>So Slapp became what is now <a href="https://slack.dev/bolt-js/concepts">Bolt for JS</a>. It was originally called Bolt, and then grew into a suite of Slack maintained Bolt* frameworks for many languages. I can't take credit for that work, it was all the DevRel team at Slack. I was pretty happy to see Slapp carry on and receive some great improvements and have value.</p>
+<p>The final area I got to focus on at Slack was helping build and design our <a href="https://api.slack.com/future">new platform</a> (which just went into open beta). It focuses around a function-centric model, and includes a new hosted solution for that function-centric runtime that is powered by <a href="https://deno.com/blog/slack-open-beta">Deno</a>. As we prototyped, and circled around what building for this new platform could look like, we ended up building a collection of open source libraries, the core of which is a <a href="https://github.com/slackapi/deno-slack-sdk">new SDK</a> for defining all the new entities that make up the new platform, and creating functions.</p>
+<p>So in a way, I've come full circle. I helped build a Slack app framework before joining Slack, and book-ended my adventure at Slack by helping build a new framework. Slack's been an amazing chapter in my career, one I'll forever appreciate and relish.</p>
+<hr>
+<p><img src="/images/slack-badge-mono.jpg" alt="My Slack Badge in black and white"></p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

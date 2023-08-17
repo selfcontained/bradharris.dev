@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>using express with broadway</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2012-09-20/using-express-with-broadway/">
+  <meta property="og:title" content="using express with broadway">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="using express with broadway">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>using express with broadway</h1>
+<time>September 20th, 2012</time>
+
+<article><p><a href="http://expressjs.com/">Express</a> is by no doubt an extremely popular http application server/framework for node.js.  In this article I'd like to demonstrate how you can take advantage of <a href="https://github.com/flatiron/broadway">broadway</a> and <a href="http://expressjs.com/">express</a> together.</p>
+<p>In this approach, we'll treat the <em>http server</em> that <code>express</code> provides as just another plugin to our <code>broadway</code> application.</p>
+<h2>express http plugin</h2>
+<p>First we'll create an http plugin encapsulating express.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-comment">// http.js</span>
+
+<span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+
+<span class="hljs-keyword">var</span> <span class="hljs-title class_">HttpPlugin</span> = <span class="hljs-built_in">exports</span>;
+
+<span class="hljs-title class_">HttpPlugin</span>.<span class="hljs-property">name</span> = <span class="hljs-string">'http'</span>;
+
+<span class="hljs-title class_">HttpPlugin</span>.<span class="hljs-property">attach</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">options</span>) {
+	<span class="hljs-keyword">var</span> app = <span class="hljs-variable language_">this</span>;
+
+	<span class="hljs-keyword">var</span> server = app.<span class="hljs-property">http</span> = <span class="hljs-title function_">express</span>();
+	server.<span class="hljs-title function_">use</span>(server.<span class="hljs-property">router</span>);
+
+	<span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes'</span>)(app);
+};
+
+<span class="hljs-title class_">HttpPlugin</span>.<span class="hljs-property">init</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) {
+	<span class="hljs-title function_">done</span>();
+};
+</code></pre>
+<p>I'd also suggest defining your routes in their own module(s), and passing along the broadway application.  This will allow them to take full advantage of any other functionality your application acquires through other plugins.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-comment">// routes.js</span>
+<span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">app</span>) {
+
+	app.<span class="hljs-property">http</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">'/'</span>, <span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>){
+		res.<span class="hljs-title function_">send</span>(<span class="hljs-string">'express on broadway'</span>);
+	});
+
+};
+</code></pre>
+<h2>broadway.concat(express)</h2>
+<p>Next we'll create a broadway application and toss in our http plugin.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-comment">// app.js</span>
+
+<span class="hljs-keyword">var</span> broadway = <span class="hljs-built_in">require</span>(<span class="hljs-string">'broadway'</span>),
+	app = <span class="hljs-keyword">new</span> broadway.<span class="hljs-title class_">App</span>();
+
+app.<span class="hljs-title function_">use</span>(<span class="hljs-built_in">require</span>(<span class="hljs-string">'./http'</span>));
+
+app.<span class="hljs-title function_">init</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) {
+	app.<span class="hljs-property">http</span>.<span class="hljs-title function_">listen</span>(<span class="hljs-number">8080</span>);
+});
+</code></pre>
+<p>You can also just <code>module.exports = app.http</code> if you're using something like <code>up</code> and need to export an http server from your main applicaiton.</p>
+<h2>krakens.release()</h2>
+<p>Finally, fire up your application</p>
+<pre><code class="language-bash hljs">&gt;node app.js
+</code></pre>
+<p>That's all there is to it.  In this example, the http server is just one piece of our application, and we can bolt on additional functionality as needed through more plugins.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

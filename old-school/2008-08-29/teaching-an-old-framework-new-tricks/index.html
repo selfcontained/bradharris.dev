@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>Teaching an old Framework new tricks!</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2008-08-29/teaching-an-old-framework-new-tricks/">
+  <meta property="og:title" content="Teaching an old Framework new tricks!">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="Teaching an old Framework new tricks!">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>Teaching an old Framework new tricks!</h1>
+<time>August 29th, 2008</time>
+
+<article><p>In summary, I want to discuss an alternative approach for developing a rich, dynamic UI using Struts1.  The basic approach is:</p>
+<ul>
+<li>Java Object to JSON string</li>
+<li>JSON String consumed by Javascript</li>
+<li>Manipulate UI, update Javascript model</li>
+<li>On submit of form serialize Javascript model to JSON string</li>
+<li>Set value of hidden input to JSON string</li>
+<li>JSON string to Java Object on server side</li>
+</ul>
+<p>Modern web development frameworks have come a long way, in almost every language.  Many of the current popular frameworks have integrated widgets or processes for building rich ajax powered UI's with little hand-rolled code.  This makes developing those applications faster and easier.  Unfortunately, we can't always use the latest and greatest new frameworks as developers.</p>
+<p>While working on a J2EE web application that was started over 5 years ago, I've learned a lot about how frameworks have evolved since then.  When this project was started, Struts 1 was very popular, and a proven framework, so was naturally adopted for the front end.  Over time, many things were built to integrate with Struts 1 and provide custom functionality that was required.  This makes it very difficult, and highly improbable that a new front end framework can be swapped in due to the time and money that would have to be invested.  At some point that may be a necessity, but until then, you have to work with what you have.</p>
+<p>Building a rich UI using ajax in Struts 1 is ... interesting.  Sruts1 is very form centric, and all of your form inputs in your UI map directly back to some field on your Java form object in one way or another.  This makes it tricky to provide a flexible data structure for a rich UI that may be adding or removing elements.  Try adding/removing elements to your page dynamically, and having them map back to your Struts1 Form in a clean way and you'll see what I'm talking about.  A recent approach I took to tackling this situation was to depend very little on the framework.</p>
+<p>Lets say I have a Java object graph I want to load into some front end javascript model to work with in the UI.  I can fetch this asynchronously as the page loads as a JSON payload, or just dump it to the page into the appropriate place so my javascript consumes it.  Either way, I need to make sure its painless to convert this data structure to a JSON string, or create it from a JSON string.  This will make passing it back and forth from the server side to the client side much easier.</p>
+<p>I can then use this as my front end data model to display, change, remove and add data.  When I'm ready to commit my changes, I then have to get that back to my server side Java action.  Obviously I could also make the persistence portion asynchronous as well, but sometimes thats problematic, as you may have a lot that goes on in the backend and the rendering of a new page (security, alerts, etc.) that you would have to replicate if you were to do this asynchronously.  To keep everything working as normal, one approach is to take your javascript data graph, and serialize it into a json string and set it into an html hidden input.  This input can be mapped back to your Struts form, so back in your action you have a json string you decode and create the appropriate Java objects from.  I've found this to be a very useful approach when trying to build a very rich UI on top of an older framework.  In summary, here are the steps followed:</p>
+<ul>
+<li>Build your data as Java objects that can be serialized into JSON, and created from a JSON string.</li>
+<li>Consume the JSON data into your javascript and work with it as needed in the front end.</li>
+<li>On submit of the form, serialize the Javascript object into a JSON string and set it onto the value of a hidden input</li>
+<li>Get the value of the hidden input on the server side as your framework supports, and convert the JSON string back to your Java objects</li>
+</ul>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>

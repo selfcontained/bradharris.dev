@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#0C171C">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Playball&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">
+  <link rel="stylesheet" href="/styles/monokai.css">
+
+  <title>node.js and circular dependencies</title>
+  <meta content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family." name="description">
+
+  
+  <meta property="og:url" content="https://bradharris.dev/old-school/2012-05-08/node-js-circular-dependencies/">
+  <meta property="og:title" content="node.js and circular dependencies">
+  
+    <meta property="og:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+  
+    <meta property="og:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@selfc0ntained">
+  <meta name="twitter:creator" content="@selfc0ntained">
+  <meta name="twitter:title" content="node.js and circular dependencies">
+  
+  
+    <meta name="twitter:description" content="Hello, I'm Brad Harris. I help build products with software, and love the web ❤️. I live in Castle Rock, Colorado and stay busy enjoying life with my family.">
+  
+  
+    <meta name="twitter:image" content="https://bradharris.dev/post-thumbnails/brad.jpg">
+  
+  
+    <meta name="twitter:image:alt" content="Picture of Brad Harris">
+  
+
+  <script>
+    (() => {
+      // prevent flashing of light=>dark mode on load
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      const darkEnabled = localStorage.getItem('dark-mode')
+      if(darkEnabled === "true" || (prefersDark && darkEnabled !== "false")) {
+        document.documentElement.classList.toggle("dark-mode", true);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="main-layout">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">bradharris.dev</a></li>
+          <li><a href="/about/">about</a></li>
+          <li><a href="/posts/">posts</a></li>
+        </ul>
+      </nav>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></header>
+
+
+    <main class="post">
+      
+<h1>node.js and circular dependencies</h1>
+<time>May 8th, 2012</time>
+
+<article><p>Circular Dependencies in modules can be tricky, and hard to debug in <a href="http://nodejs.org">node.js</a>.  If module <code>A</code> <code>requires('B')</code> before it has finished setting up it's exports, and then module <code>B</code> <code>requires('A')</code>, it will get back an empty object instead what <code>A</code> may have intended to export.  It makes logical sense that if the export of <code>A</code> wasn't setup, requiring it in <code>B</code> results in an empty export object.  All the same, it can be a pain to debug, and not inherently obvious to developers used to having those circular dependencies handled automatically.  Fortunately, there are rather simple approaches to resolving the issue.</p>
+<h2>example.broken() === true</h2>
+<p>Let's define a broken scenario to clearly illustrate the issue.  Module <code>A</code> delegates to an instance of Module <code>B</code> to <code>do some important stuff()</code>.</p>
+<h3>Module A</h3>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">var</span> B = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./B'</span>),
+	id,
+	bInstance;
+
+<span class="hljs-keyword">var</span> A = <span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = {
+	init : <span class="hljs-keyword">function</span>(<span class="hljs-params">val</span>) {
+		id = val;
+		bInstance = <span class="hljs-keyword">new</span> <span class="hljs-title function_">B</span>();
+		<span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>;
+	},
+
+	doStuff : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		bInstance.<span class="hljs-title function_">stuff</span>();
+		<span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>;
+	},
+
+	getId : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">return</span> id;
+	}
+};
+</code></pre>
+<h3>Module B</h3>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">var</span> A = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./A'</span>);
+
+<span class="hljs-keyword">var</span> B = <span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>){
+	<span class="hljs-keyword">return</span> {
+		stuff : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+			<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'I got the id: '</span>, A.<span class="hljs-title function_">getId</span>());
+		}
+	};
+};
+</code></pre>
+<h3>Tie them together</h3>
+<pre><code class="language-javascript hljs"><span class="hljs-built_in">require</span>(<span class="hljs-string">'./A.js'</span>)
+	.<span class="hljs-title function_">init</span>(<span class="hljs-number">1234</span>)
+	.<span class="hljs-title function_">doStuff</span>();
+</code></pre>
+<p>With this you'll end up with an error:</p>
+<pre><code class="language-javascript hljs"><span class="hljs-title class_">TypeError</span>: <span class="hljs-title class_">Object</span> #&lt;<span class="hljs-title class_">Object</span>&gt; has no method <span class="hljs-string">'getId'</span>
+	at <span class="hljs-title class_">Object</span>.<span class="hljs-property">stuff</span> (<span class="hljs-regexp">/Users/</span>bharris/workspace/circular-dep/B.<span class="hljs-property">js</span>:<span class="hljs-number">7</span>:<span class="hljs-number">36</span>)
+	at <span class="hljs-title class_">Object</span>.<span class="hljs-property">doStuff</span> (<span class="hljs-regexp">/Users/</span>bharris/workspace/circular-dep/A.<span class="hljs-property">js</span>:<span class="hljs-number">18</span>:<span class="hljs-number">13</span>)
+	at <span class="hljs-title class_">Object</span>.&lt;anonymous&gt; (<span class="hljs-regexp">/Users/</span>bharris/workspace/circular-dep/test.<span class="hljs-property">js</span>:<span class="hljs-number">4</span>:<span class="hljs-number">3</span>)
+</code></pre>
+<p>The issue is that when <code>A</code> is required at the top of <code>B</code>, it ends up being an empty object, which doesn't have a <code>getId</code> method.</p>
+<h2>example.solutions().length === 2</h2>
+<p>I'll explain two simple solutions to this issue:</p>
+<ul>
+<li><a href="#delay">delay invocation of dependency until runtime</a></li>
+<li><a href="#inject">replace circular dependency with dependency injection</a></li>
+</ul>
+<p><a name="delay"></a>
+##delay invocation of dependency until runtime</p>
+<p>If we move the require statements to where they are needed at runtime, it will delay the execution of them, allowing for the exports to have been created properly.  In this example, we can get away with simply moving the <code>require('./B')</code> statement.</p>
+<h3>Module A</h3>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">var</span> id,
+	bInstance;
+
+<span class="hljs-keyword">var</span> A = <span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = {
+	init : <span class="hljs-keyword">function</span>(<span class="hljs-params">val</span>) {
+		id = val;
+		bInstance = <span class="hljs-keyword">new</span> <span class="hljs-built_in">require</span>(<span class="hljs-string">'./B'</span>)();
+		<span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>;
+	},
+
+	doStuff : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		bInstance.<span class="hljs-title function_">stuff</span>();
+		<span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>;
+	},
+
+	getId : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">return</span> id;
+	}
+};
+</code></pre>
+<p>This feels like a bit of bandaid to this particular problem, but perhaps is the right solution in some cases.</p>
+<p><a name="inject"></a></p>
+<h2>replace circular dependency with dependency injection</h2>
+<p>The only dependecy that <code>B</code> currently has on <code>A</code> is an id property it needs access to.  We could just pass the id into the constructor of <code>B</code>, but let's assume <code>A</code> is more significant to the operations <code>B</code> must perform, and a proper reference is required.  If we inject that dependency we'll allow for a loose coupling between the two modules, and have a slightly more elegant solution.  Zing!</p>
+<h3>Module A</h3>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">var</span> B = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./B'</span>),
+	id,
+	bInstance;
+
+<span class="hljs-keyword">var</span> A = <span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = {
+	init : <span class="hljs-keyword">function</span>(<span class="hljs-params">val</span>) {
+		id = val;
+		bInstance = <span class="hljs-keyword">new</span> <span class="hljs-title function_">B</span>(<span class="hljs-variable language_">this</span>);
+		<span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>;
+	},
+
+	getId : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		<span class="hljs-keyword">return</span> id;
+	},
+
+	doStuff : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+		bInstance.<span class="hljs-title function_">stuff</span>();
+		<span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>;
+	}
+};
+</code></pre>
+<h3>Module B</h3>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">var</span> B = <span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">val</span>){
+	<span class="hljs-keyword">var</span> dependency = val;
+	<span class="hljs-keyword">return</span> {
+		stuff : <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+			<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'I got the id: '</span>, dependency.<span class="hljs-title function_">getId</span>());
+		}
+	};
+
+};
+</code></pre>
+<h3>#winning</h3>
+<pre><code class="language-javascript hljs"><span class="hljs-title class_">DependencyInjection</span>
+	.<span class="hljs-title function_">merge</span>(<span class="hljs-title class_">LooseCoupling</span>)
+	.<span class="hljs-title function_">attach</span>($);
+</code></pre>
+<p>I put my <code>$</code> on <a href="http://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> and <a href="http://en.wikipedia.org/wiki/Loose_coupling">loose coupling</a>.</p>
+</article>
+    </main>
+    <footer>
+      <span>© 2023 Brad Harris</span>
+      <a href="https://twitter.com/selfc0ntained" rel="me"><img src="/icons/twitter.png" width="15" class="glow-2"></a>
+      <a href="https://github.com/selfcontained" rel="me"><img src="/icons/github.png" width="15" class="glow"></a>
+      <a href="https://www.linkedin.com/in/bradharris/" rel="me"><img src="/icons/linkedin.png" width="15" class="glow-3"></a>
+      <dark-mode-toggle key="dark-mode" darkmode-class="dark-mode">
+    </dark-mode-toggle></footer>
+  </div>
+  <script src="/scripts/dark-mode-toggle.js"></script>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-49NP8W3EPZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-49NP8W3EPZ');
+    </script>
+  
+
+</body></html>
