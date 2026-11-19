@@ -1,7 +1,0 @@
-# Neon sculptural illustration
-
-Built-in image generation edit using the earlier midnight sculptural study as the reference (archived outside the repository). Saved to `images/agent-code-owners/neon-sculptural-roles.png` and applied to the post preview.
-
-## Prompt
-
-Edit the supplied sculptural still life to use a vivid neon palette matching a personal engineering website. Preserve the exact four large forms on the left, many smaller uniquely shaped components on the right, composition, realistic matte ceramic microtexture, camera angle, shadows, and architectural photography aesthetic. Recolor the backdrop and table deep blue-black #0C171C. Recolor selected entire ceramic forms electric teal #41EAD4, hot pink #FF206E, acid neon yellow #FBFF12, and electric blue #0197F6. Make three of the four large forms teal, hot pink, and electric blue; fourth stays graphite. Distribute matching saturated colors through the smaller specialized components, with a few graphite and chalk-white pieces for balance. Neon colors should be bold fluorescent pigments on physical ceramic, not translucent or glossy plastic. Subtle colored reflected light at bases is okay, but preserve crisp geometry and surface texture, no heavy bloom or glowing outlines, no sci-fi. Strong studio side-light, rich dimensional shadows, visibly brighter and more colorful than the original. No text, labels, icons, arrows, numbers, or logos. Landscape 3:2.
