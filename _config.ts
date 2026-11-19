@@ -15,6 +15,17 @@ site.use(resolveUrls());
 site.use(imagick());
 site.use(date());
 site.use(codeHighlight({
+  languages: {
+    "markdown-frontmatter": () => ({
+      name: "Markdown with YAML frontmatter",
+      subLanguage: "markdown",
+      contains: [{
+        begin: /^---[ \t]*$/,
+        end: /^---[ \t]*$/,
+        subLanguage: "yaml",
+      }],
+    }),
+  },
   options: {}
 }))
 
