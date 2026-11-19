@@ -4,7 +4,7 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 
 .hljs {
   background: #272822;
-  color: #ddd;
+  color: #f8f8f2;
 }
 
 .hljs-tag,
@@ -53,7 +53,7 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 .hljs-quote,
 .hljs-deletion,
 .hljs-meta {
-  color: #75715e;
+  color: #aaa793;
 }
 
 .hljs-keyword,
@@ -66,3 +66,43 @@ Monokai style - ported by Luigi Maselli - http://grigio.org
 .hljs-selector-id {
   font-weight: bold;
 }
+
+/* Layout lives here too: no light-theme stylesheet underneath Monokai. */
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1.25em;
+  border-radius: 8px;
+  line-height: 1.65;
+  text-align: left;
+  tab-size: 2;
+}
+
+code.hljs {
+  padding: 3px 5px;
+}
+
+.hljs-number,
+.hljs-built_in,
+.hljs-symbol {
+  color: #ae81ff;
+}
+
+.hljs-attr,
+.hljs-punctuation,
+.hljs-subst {
+  color: #f8f8f2;
+}
+
+.hljs-string,
+.hljs-regexp {
+  color: #e6db74;
+}
+
+.hljs-operator,
+.hljs-template-tag {
+  color: #f92672;
+}
+
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: bold; }
