@@ -1,0 +1,108 @@
+/*
+Monokai style - ported by Luigi Maselli - http://grigio.org
+*/
+
+.hljs {
+  background: #272822;
+  color: #f8f8f2;
+}
+
+.hljs-tag,
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-strong,
+.hljs-name {
+  color: #f92672;
+}
+
+.hljs-code {
+  color: #66d9ef;
+}
+
+.hljs-attribute,
+.hljs-symbol,
+.hljs-regexp,
+.hljs-link {
+  color: #bf79db;
+}
+
+.hljs-string,
+.hljs-bullet,
+.hljs-subst,
+.hljs-title,
+.hljs-section,
+.hljs-emphasis,
+.hljs-type,
+.hljs-built_in,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-addition,
+.hljs-variable,
+.hljs-template-tag,
+.hljs-template-variable {
+  color: #a6e22e;
+}
+
+.hljs-title.class_,
+.hljs-class .hljs-title {
+  color: white;
+}
+
+.hljs-comment,
+.hljs-quote,
+.hljs-deletion,
+.hljs-meta {
+  color: #aaa793;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-doctag,
+.hljs-title,
+.hljs-section,
+.hljs-type,
+.hljs-selector-id {
+  font-weight: bold;
+}
+
+/* Layout lives here too: no light-theme stylesheet underneath Monokai. */
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1.25em;
+  border-radius: 8px;
+  line-height: 1.65;
+  text-align: left;
+  tab-size: 2;
+}
+
+code.hljs {
+  padding: 3px 5px;
+}
+
+.hljs-number,
+.hljs-built_in,
+.hljs-symbol {
+  color: #ae81ff;
+}
+
+.hljs-attr,
+.hljs-punctuation,
+.hljs-subst {
+  color: #f8f8f2;
+}
+
+.hljs-string,
+.hljs-regexp {
+  color: #e6db74;
+}
+
+.hljs-operator,
+.hljs-template-tag {
+  color: #f92672;
+}
+
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: bold; }
