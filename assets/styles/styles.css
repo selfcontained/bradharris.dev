@@ -257,6 +257,12 @@ main.post >time {
   height: auto;
 }
 
+.project-logo {
+  box-sizing: border-box;
+  padding: var(--boofer);
+  background-color: #0C171C;
+}
+
 #home-content img {
   border: 1px solid #000;
   width: 250px;
@@ -321,5 +327,10 @@ main.post >time {
   .post-thumbnail {
     width: 100%;
     height: 100%;
+  }
+
+  .post-thumbnail.project-logo {
+    width: 120px;
+    height: auto;
   }
 }

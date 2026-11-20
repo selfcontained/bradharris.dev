@@ -3,6 +3,13 @@ title: Brad Harris
 thumbnailImage: "/images/mckay-brad.jpg"
 thumbnailImageAlt: "Picture of Mckay and Brad. Mckay has really awesome glasses on."
 twitterCard: "summary_large_image"
+projects:
+  - name: Dispatch
+    url: "https://dispatch.berad.dev/"
+    status: "Currently building"
+    image: "/images/dispatch-icon.svg"
+    imageAlt: "Dispatch logo"
+    description: "A workspace for you and your AI agents. Put Claude Code, Codex and OpenCode agents to work, follow their progress, and review what they produce."
 ---
 
 <h1>🤝 welcome traveler</h1>
@@ -15,6 +22,33 @@ twitterCard: "summary_large_image"
     <p>My name is <span class="p-name">Brad Harris</span>.</p>
     <p>Read more <a href="/about">about me</a>, or check out some of <a href="/posts">my ramblings</a>.
   </section>
+</div>
+
+<div>
+  <hr />
+
+  <div class="latest-posts">
+    <h2>🛠 Projects</h2>
+  </div>
+
+  <ul class="posts-list">
+    {% for project in projects %}
+      <li>
+        {% if project.image %}
+          <img src="{{ project.image }}" class="post-thumbnail project-logo glow" alt="{{ project.imageAlt }}"/>
+        {% endif %}
+        <section>
+          <h3>
+            <a href="{{ project.url }}">{{ project.name }}</a>
+          </h3>
+          <p>
+            <time>{{ project.status }}</time>
+          </p>
+          <p class="post-excerpt">{{ project.description }}</p>
+        </section>
+      </li>
+    {% endfor %}
+  </ul>
 </div>
 
 <div>
